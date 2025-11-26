@@ -3,31 +3,38 @@ import Profile from "./Profile";
 
 export default function Hero() {
   return (
-    
-    <div className="bg-[#0E0E0E] overflow-hidden h-screen">
-      
-    
-      <div className="flex items-center justify-center">
+    <div className="relative bg-[#0E0E0E]  ">
+      {/* Background gradient blur */}
+      <div className="absolute inset-0 flex items-center justify-center ">
         <div
-         
-          className="w-[1200px] h-[1200px] blur-[80px] rounded-full -mt-[30%] opacity-40"
+          className="w-[1200px] h-[1100px] blur-[80px] rounded-full opacity-50 -translate-y-[30%]"
           style={{
             backgroundImage:
-              'radial-gradient(circle at center, #DCC0F9 21%, #894FC3 48%, #0E0E0E 100%)',
+              'radial-gradient(circle at center, #DCC0F9 31%, #894FC3 48%, #0E0E0E 100%)',
           }}
         />
       </div>
 
-      {/* 2. Navbar and Main Content (The Foreground Element) */}
-      {/* The key is the large negative margin-top to pull the Navbar/content container up 
-         so it sits over the blurred circle element, effectively overlapping it. */}
-      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center z-10 text-white -mt-30"> 
+      {/* Foreground content */}
+      <div className="fixed w-full px-24 py-12">
+            <Navbar />
+            </div>
+    <div className="h-screen flex items-center justify-center text-2xl">
+  <div className="flex items-center w-full px-40">
+    <div className="mr-auto">I craft digital experiences and brand identities,</div>
+    <div className="mr-16">I also love listening to music.</div>
+  </div>
+</div>
+
+<div>
+
+</div>
+
+
         
-        <Profile/>
-        
-        {/* Other Hero content goes here */}
-        
-      </div>
+        <div className=" -mt-40 absolute top-0 pr-20 w-full scale-105 z-12">
+          <Profile />
+        </div>
       
     </div>
   );

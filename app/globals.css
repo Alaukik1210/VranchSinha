@@ -24,3 +24,12 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+:root {
+  --font-primary: var(--font-outfit);
+  --font-heading: var(--font-funnel-display);
+}
+
+body {
+  font-family: var(--font-primary);
+}
