@@ -100,7 +100,7 @@ export default function KeyNotes() {
           <motion.div
             key={item.id}
             variants={lineAnim}
-            className={`flex justify-center py-2 transition-colors duration-500 ease-out ${item.align}`}
+            className={`flex justify-center py-2 transition-colors duration-500 ease-out tracking-wider ${item.align}`}
             onMouseEnter={() => setHovered(item.id)}
             onMouseLeave={() => setHovered(null)}
             style={{ color: hovered === item.id ? item.hoverColor : "white" }}
@@ -108,12 +108,19 @@ export default function KeyNotes() {
             {item.prefix}
 
             <span className={`relative inline-flex items-center ${item.space}`}>
-              <span className="relative z-0">{item.word}</span>
+              <span
+  className={`relative z-0 transition-all duration-300 ${
+    hovered === item.id ? "opacity-0" : "opacity-100"
+  }`}
+>
+  {item.word}
+</span>
+
 
               {/* Hover layer */}
               <span
                 className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-all duration-500 ease-out ${
-                  hovered === item.id ? "opacity-100 scale-105" : "opacity-0 scale-50"
+                  hovered === item.id ? "opacity-100 scale-100" : "opacity-0 scale-50"
                 }`}
               >
                 <img
@@ -128,7 +135,7 @@ export default function KeyNotes() {
                   }}
                 />
                 <span
-                  className="relative px-2 rounded-xl font-semibold"
+                  className="relative px-2 rounded-[55px] font-semibold"
                   style={{
                     backgroundColor: item.bg,
                     color: item.bg,

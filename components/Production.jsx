@@ -43,7 +43,7 @@ export default function Production() {
         {items.map((item) => (
           <div
             key={item.id}
-            className="group relative w-[450px] h-[500px] p-10 max-w-sm rounded-xl shadow-2xl border border-white/20 overflow-hidden flex flex-col items-center justify-center"
+           className="group relative w-[450px] h-[500px] p-10 rounded-xl shadow-2xl border border-white/20 overflow-hidden flex flex-col items-center justify-center"
             style={{
               backgroundColor: "rgba(255, 255, 255, 0.1)",
               backdropFilter: "blur(12px)",
@@ -70,7 +70,7 @@ export default function Production() {
                 alt={`icon-${item.id}`}
                 width={300}
                 height={300}
-                className="object-contain"
+                className="object-contain mt-12"
               />
             </div>
 

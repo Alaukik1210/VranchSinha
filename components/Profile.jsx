@@ -27,7 +27,7 @@ export default function Profile({
   transparent = true
 }) {
   return (
-    <div className="relative z-0 w-full h-screen flex justify-center items-center">
+    <div className="relative z-0 w-full h-screen  flex justify-center items-center">
       <Canvas
         camera={{ position, fov }}
         gl={{ alpha: transparent }}
@@ -89,6 +89,7 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
   const [dragged, drag] = useState(false);
   const [hovered, hover] = useState(false);
   const [flipped, setFlipped] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [isSmall, setIsSmall] = useState(
     () => typeof window !== "undefined" && window.innerWidth < 1024
   );
@@ -238,15 +239,26 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
             position={[0, -3.2, -0.05]}
             onPointerOver={() => hover(true)}
             onPointerOut={() => hover(false)}
-            onClick={(e) => {
+            onDoubleClick={(e) => {
               e.stopPropagation();
-              if (!dragged) setFlipped((p) => !p); // don't flip while dragging
+              if (!isDragging) {
+                setFlipped((p) => !p);
+              }
             }}
-            onPointerUp={(e) => (e.target.releasePointerCapture(e.pointerId), drag(false))}
+            onPointerUp={(e) => {
+              e.target.releasePointerCapture(e.pointerId);
+              drag(false);
+              setTimeout(() => setIsDragging(false), 100);
+            }}
             onPointerDown={(e) => {
               e.target.setPointerCapture(e.pointerId);
-              // set drag to the offset vector (same as before)
               drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation())));
+              setIsDragging(false);
+            }}
+            onPointerMove={(e) => {
+              if (dragged) {
+                setIsDragging(true);
+              }
             }}
           >
             <mesh geometry={nodes.card.geometry}>
