@@ -27,7 +27,7 @@ export default function Profile({
   transparent = true
 }) {
   return (
-    <div className="relative z-0 w-full h-screen  flex justify-center items-center">
+    <div className=" h-screen z-0 flex justify-center items-center">
       <Canvas
         camera={{ position, fov }}
         gl={{ alpha: transparent }}

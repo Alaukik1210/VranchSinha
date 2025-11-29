@@ -20,7 +20,7 @@ export default function Hero() {
         <Navbar />
       </div>
       <div className="h-screen flex items-center  text-white justify-evenly md:text-xl lg:text-2xl mx-20">
-        <div className="flex items-center w-full z-20 ">
+        <div className="flex items-center w-full z-12 ">
           <div className="w-2/5 text-center">
             I craft digital experiences and brand identities,
           </div>
@@ -33,7 +33,7 @@ export default function Hero() {
 
       <div></div>
 
-      <div className=" -mt-40  absolute top-0 md:pr-20 w-full scale-105 z-12">
+      <div className=" -mt-40  absolute top-0 md:pr-20 w-full scale-105 z-20">
         <Profile />
       </div>
     </div>
