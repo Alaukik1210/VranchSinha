@@ -5,7 +5,7 @@ export default function Hero() {
   return (
     <div className="relative bg-[#0E0E0E]  ">
       {/* Background gradient blur */}
-      <div className="absolute inset-0 flex items-center justify-center ">
+      <div className="absolute inset-0 flex items-center z-0 justify-center ">
         <div
           className="w-[1200px] h-[1100px] blur-[80px] rounded-full opacity-50 -translate-y-[30%]"
           style={{
@@ -19,8 +19,8 @@ export default function Hero() {
       <div className="fixed w-full px-24 py-12 font-outfit">
         <Navbar />
       </div>
-      <div className="h-screen flex items-center  justify-evenly md:text-xl lg:text-2xl mx-20">
-        <div className="flex items-center w-full ">
+      <div className="h-screen flex items-center  text-white justify-evenly md:text-xl lg:text-2xl mx-20">
+        <div className="flex items-center w-full z-20 ">
           <div className="w-2/5 text-center">
             I craft digital experiences and brand identities,
           </div>
