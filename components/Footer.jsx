@@ -9,8 +9,12 @@ export default function Footer() {
        
                
        <div className="">
-           <div className="bg-purple-900 h-[100vh] rounded-t-[75px]  w-full ">
-               <div className="flex pt-32 w-full" >
+           <div className=" h-[100vh] rounded-t-[75px]  w-full bg-gradient-to-b from-purple-900 via-purple-950 to-black"
+          
+>
+           
+            
+               <div className="flex  pt-32 w-full" >
                <div>
                    <Image src="/logo.svg" alt="logo" width={80} height={80} className="mx-12"/>
                </div>
