@@ -1,10 +1,39 @@
 "use client"
-export default function Footer(){
-    return(
-<div className="h-screen">
-    <div className="h-1/3 rounded-t-2xl">
-sdrf
-    </div>
-</div>
-    )
-}
+
+import { div } from "framer-motion/client"
+import Image from "next/image"
+
+export default function Footer() {
+    return (
+       <div>
+       
+               
+       <div className="">
+           <div className="bg-purple-900 h-[100vh] rounded-t-[75px]  w-full ">
+               <div className="flex pt-32 w-full" >
+               <div>
+                   <Image src="/logo.svg" alt="logo" width={80} height={80} className="mx-12"/>
+               </div>
+               <div className="flex justify-between gap-[700px]">
+       
+               <div className="  items-end text-purple-300 ">
+                    <span className="text-7xl font-funnel">
+                       Vranch Sinha
+                       </span> 
+                   <div className="text-2xl pl-4">
+                       PORTFOLIO VOL. 1
+                   </div>
+               </div>
+               <div className="flex gap-12">
+                   <div className="h-15 w-15 bg-purple-300 rounded-xl"></div>
+                   <div className="h-15 w-15 bg-purple-300 rounded-xl"></div>
+                   <div className="h-15 w-15 bg-purple-300 rounded-xl"></div>
+                   <div className="h-15 w-15 bg-purple-300 rounded-xl"></div>
+               </div>
+               </div>
+               </div>
+           </div>
+       </div>
+       </div>
+    );
+};
