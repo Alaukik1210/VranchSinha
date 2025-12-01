@@ -20,6 +20,9 @@ const outfit = Outfit({
 export const metadata = {
   title: "Vranch sinha",
   description: "vranch sinha portfolio",
+  icons: {
+    icon: "/logo.svg",
+  },
 };
 
 export default function RootLayout({ children }) {
