@@ -14,26 +14,22 @@ export default function Navbar() {
           {navItems.map((item) => (
             <button
               key={item}
-              className="px-6 py-3 text-white font-medium text-sm rounded-full transition-all duration-300 transform hover:scale-105"
-style={{
-  background: "rgba(255, 255, 255, 0.04)",     // very transparent
-  backdropFilter: "blur(12px) saturate(160%)",
-  WebkitBackdropFilter: "blur(12px) saturate(160%)",
+            className="px-6 py-3 text-white  text-sm rounded-full transition-all duration-300 transform hover:scale-105 
+              
+              relative 
+    bg-white/5
+    backdrop-blur-[px]
+    border border-white/10
+    
+    overflow-hidden
+     tracking-wide
 
-  borderRadius: "999px",
-
-  // soft thin white stroke
-  border: "1px solid rgba(255, 255, 255, 0.18)",
-
-  // subtle inner refraction — no strong white, no shadows
-  boxShadow: `
-    inset 0px 1px 3px rgba(255, 255, 255, 0.10),
-    inset 0px -2px 6px rgba(0, 0, 0, 0.18)
-  `,
-}}
-
-
-
+   before:content-[''] before:absolute before:inset-0 
+  before:rounded-full 
+  before:ring-1 before:ring-white/20 
+  before:ring-offset-0
+  before:mask-[linear-gradient(to_bottom_right,white,transparent)]
+              "
             >
               {item}
             </button>

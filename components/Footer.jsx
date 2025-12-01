@@ -22,7 +22,7 @@ export default function Footer() {
 
           {/* Right side content */}
           <div className="flex justify-between gap-[300px] w-full items-end">
-            <div className="text-purple-300 flex flex-col justify-end">
+            <div className="text-[#DCC0F7] flex flex-col justify-end">
               <span className="text-7xl font-funnel leading-none block">
                 Vranch Sinha
               </span>
@@ -33,10 +33,10 @@ export default function Footer() {
 
             {/* 4 squares */}
             <div className="flex gap-12 mr-32 items-end">
-              <div className="h-15 w-15 bg-purple-300 rounded-xl" />
-              <div className="h-15 w-15 bg-purple-300 rounded-xl" />
-              <div className="h-15 w-15 bg-purple-300 rounded-xl" />
-              <div className="h-15 w-15 bg-purple-300 rounded-xl" />
+              <div className="h-15 w-15 bg-[#DCC0F7] rounded-xl" />
+              <div className="h-15 w-15 bg-[#DCC0F7] rounded-xl" />
+              <div className="h-15 w-15 bg-[#DCC0F7] rounded-xl" />
+              <div className="h-15 w-15 bg-[#DCC0F7] rounded-xl" />
             </div>
           </div>
         </div>
