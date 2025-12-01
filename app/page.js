@@ -1,16 +1,20 @@
+"use client";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Hero from "@/components/Hero";
-import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import KeyNotes from "@/components/KeyNotes";
 import Discography from "@/components/Discography";
 import SignatureTags from "@/components/SignatureTags";
 import Playlist from "@/components/Playlist";
-import Production from "@/components/Production";
-import Footer from "@/components/Footer";
 import PortfolioScrollAnimation from "@/components/PortfolioScrollAnimation";
 
-
 export default function Home() {
+  const { scrollYProgress } = useScroll();
+
+  // px-12 → px-0 animation
+  const paddingX = useTransform(scrollYProgress, [0, 1], ["488px", "0px"]);
+  // (px-12 = 48px)
+
   return (
     <>
       {/* Entire landing page */}
@@ -27,10 +31,12 @@ export default function Home() {
       </div>
 
       {/* Scroll animation OUTSIDE and ABOVE the page */}
-      <div className="relative z-[9999] bg-[#0E0E0E]">
+      <motion.div
+        style={{ paddingLeft: paddingX, paddingRight: paddingX }}
+        className="relative z-[9999] bg-[#0E0E0E]"
+      >
         <PortfolioScrollAnimation />
-      </div>
+      </motion.div>
     </>
   );
 }
-
