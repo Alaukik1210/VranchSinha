@@ -18,7 +18,7 @@ export default function PortfolioScrollAnimation() {
     className="absolute inset-0 opacity-90 mix-blend-normal pointer-events-none mb-20 "
     style={{
       backgroundImage: "url('/noise.png')",
-      backgroundSize: "1600px 1000px", // adjust density
+      backgroundSize: "1800px 1000px", // adjust density
       backgroundRepeat: "no-repeat",
     }}
   />
