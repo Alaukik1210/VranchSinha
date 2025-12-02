@@ -1,14 +1,23 @@
 "use client";
 
 import Image from "next/image";
-
+import Aurora from "./Aurora";
 export default function Footer() {
   return (
     <div className="w-full">
-      <div className="h-[100vh] pt-12 w-full bg-[url('/footerbg.png')] scale-110 overflow-hidden bg-cover bg-center bg-no-repeat">
+      <div className="h-100vh] pt-12 w-full bg-[url('/footerbg.png')] scale-110 overflow-hidden bg-cover bg-center bg-no-repeat">
+<div style={{ width: '100%', height: 900, position: 'relative' }}>
+   <div className="absolute inset-0 -z-10">
+    <Aurora
+  colorStops={["#894fc3", "#dcc0f7", "#894fc3"]}
+  blend={0.5}
+  amplitude={1.0}
+  speed={0.5}
+/>
+  </div>
 
         {/* changed this block only */}
-        <div className="flex w-full h-full items-end pb-16">
+        <div className="flex w-full h-full items-end  pb-16 ">
           {/* Logo */}
           <div className="flex items-end">
             <Image
@@ -40,7 +49,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-
+</div>
       </div>
     </div>
   );
