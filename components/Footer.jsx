@@ -10,8 +10,8 @@ export default function Footer() {
 <div style={{ width: '100%', height: 900, position: 'relative' }}>
   <div className="flex justify-center  absolute text-[#dcc0f7] font-funnel font-light text-[200px] inset-60  tracking-tight">
    <GradientText
-  colors={["#894fc3", "#dcc0f7", "#894fc3", "#dcc0f7", "#894fc3"]}
-  animationSpeed={3}
+  colors={["#894fc3", "#dcc0f7", "#0E0E0E", "#ffff", "#894fc3"]}
+  animationSpeed={5}
   showBorder={false}
   className="custom-class"
 >
