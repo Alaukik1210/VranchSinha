@@ -2,11 +2,23 @@
 
 import Image from "next/image";
 import Aurora from "./Aurora";
+import GradientText from "./GradientText";
 export default function Footer() {
   return (
     <div className="w-full">
       <div className="h-100vh] pt-12 w-full bg-[url('/footerbg.png')] scale-110 overflow-hidden bg-cover bg-center bg-no-repeat">
 <div style={{ width: '100%', height: 900, position: 'relative' }}>
+  <div className="flex justify-center  absolute text-[#dcc0f7] font-funnel font-light text-[200px] inset-60  tracking-tight">
+   <GradientText
+  colors={["#894fc3", "#dcc0f7", "#894fc3", "#dcc0f7", "#894fc3"]}
+  animationSpeed={3}
+  showBorder={false}
+  className="custom-class"
+>
+  Get in Touch
+</GradientText>
+    
+    </div>
    <div className="absolute inset-0 -z-10">
     <Aurora
   colorStops={["#894fc3", "#dcc0f7", "#894fc3"]}
