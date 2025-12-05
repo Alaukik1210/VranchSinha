@@ -39,7 +39,7 @@ export default function Production() {
     <div className="h-auto md:h-screen text-white flex flex-col z-10 items-center">
       <div className="pt-8 text-xl mt-12 tracking-wider">PRODUCTION</div>
 
-      <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20 w-full px-6 place-items-center">
+      <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 w-full px-6 place-items-center">
         {items.map((item) => (
           <div
             key={item.id}

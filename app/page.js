@@ -12,7 +12,7 @@ export default function Home() {
   const { scrollYProgress } = useScroll();
 
   // px-12 → px-0 animation
-  const paddingX = useTransform(scrollYProgress, [0, 1], ["488px", "0px"]);
+  const paddingX = useTransform(scrollYProgress, [0, 1], ["70px", "0px"]);
   // (px-12 = 48px)
 
   return (

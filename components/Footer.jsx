@@ -8,7 +8,7 @@ export default function Footer() {
     <div className="w-full">
       <div className="h-100vh] pt-12 w-full bg-[url('/footerbg.png')] scale-110 overflow-hidden bg-cover bg-center bg-no-repeat">
 <div style={{ width: '100%', height: 900, position: 'relative' }}>
-  <div className="flex justify-center  absolute text-[#dcc0f7] font-funnel font-light text-[200px] inset-60  tracking-tight">
+  <div className="flex justify-center  absolute text-[#dcc0f7] font-funnel font-light text-[130px] inset-60  tracking-tight">
    <GradientText
   colors={["#894fc3", "#dcc0f7", "#0E0E0E", "#ffff", "#894fc3"]}
   animationSpeed={5}

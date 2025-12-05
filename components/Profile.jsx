@@ -110,7 +110,7 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
 
   // Load model + texture
   const { nodes, materials } = useGLTF(cardGLB);
-  const texture = useTexture("/assets/lanyard.png");
+  const texture = useTexture("/assets/lanyard1.png");
 
   // Curve for the rope
   const [curve] = useState(
