@@ -42,7 +42,7 @@ export default function Footer() {
           </div>
 
           {/* Right side content */}
-          <div className="flex justify-between gap-[300px] w-full items-end">
+          <div className="flex justify-between gap-[50px] w-full items-end">
             <div className="text-[#DCC0F7] flex flex-col justify-end">
               <span className="text-7xl font-funnel leading-none block">
                 Vranch Sinha

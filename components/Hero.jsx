@@ -19,8 +19,8 @@ export default function Hero() {
       <div className="fixed w-full px-24 py-12 font-outfit">
         <Navbar />
       </div>
-      <div className="h-screen flex items-center  text-white justify-evenly md:text-xl lg:text-2xl mx-20">
-        <div className="flex items-center w-full z-12 ">
+      <div className="h-screen flex items-center  text-white justify-evenly md:text-lg lg:text-lg mx-20">
+        <div className="flex items-center font-light w-full z-12 ">
           <div className="w-2/5 text-center">
             I craft digital experiences and brand identities,
           </div>
