@@ -23,11 +23,11 @@ const cardGLB = "/assets/card.glb";
 export default function Profile({
   position = [0, 0, 30],
   gravity = [0, -40, 0],
-  fov = 20,
+  fov = 35,
   transparent = true
 }) {
   return (
-    <div className=" h-screen z-0 flex justify-center items-center">
+    <div className=" h-[160vh] z-0 flex justify-center items-center">
       <Canvas
         camera={{ position, fov }}
         gl={{ alpha: transparent }}

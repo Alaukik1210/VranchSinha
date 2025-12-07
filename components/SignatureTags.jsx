@@ -29,14 +29,14 @@ export default function SignatureTags() {
 
         {/* LOGOS ----------------------------------- */}
         <div
-          className="flex justify-start w-[90%] md:w-[31%] cursor-pointer relative"
+          className="flex justify-start w-[90%] md:w-[31%] hover:text-[#9CD7F9] cursor-pointer relative"
           onMouseEnter={() => setHovered("logos")}
           onMouseLeave={() => setHovered(null)}
         >
             <span
              onMouseEnter={() => setHovered("logos")}
           onMouseLeave={() => setHovered(null)}
-className={`${hovered === "brand" ? "opacity-0" : "opacity-100"} transition-all duration-300`}
+className={`${hovered === "brand" ? "opacity-0" : "opacity-100"} transition-all  duration-300`}
           >
           LOGOS
             </span>
@@ -71,7 +71,7 @@ className={`${hovered === "brand" ? "opacity-0" : "opacity-100"} transition-all 
           <span
              onMouseEnter={() => setHovered("brand")}
           onMouseLeave={() => setHovered(null)}
- className={`${hovered === "logos" ? "opacity-0" : "opacity-100"} transition-all duration-300`}
+ className={`${hovered === "logos" ? "opacity-0" : "opacity-100"} transition-all hover:text-[#FFE481] duration-300`}
           >
           BRAND KITS
             </span>

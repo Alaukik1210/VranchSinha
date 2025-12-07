@@ -6,7 +6,7 @@ export default function Navbar() {
   return (
     <nav className="z-50 overflow-x-hidden">
       <div className="flex items-center justify-between ">
-        <div className="text-2xl font-extrabold text-white tracking-wider cursor-pointer">
+        <div className="  text-white tracking-wider cursor-pointer">
           <Image src="/logo.svg" alt="Logo" width={50} height={100}></Image>
         </div>
 
@@ -14,11 +14,11 @@ export default function Navbar() {
           {navItems.map((item) => (
             <button
               key={item}
-            className="px-6 py-3 text-white  text-sm rounded-full transition-all duration-300 transform hover:scale-105 
+            className="px-6 py-3 text-white  font-light text-sm rounded-full transition-all duration-300 transform hover:scale-105 
               
               relative 
     bg-white/5
-    backdrop-blur-[px]
+    backdrop-blur-[0.5px]
     border border-white/10
     
     overflow-hidden

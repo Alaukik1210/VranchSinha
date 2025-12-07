@@ -33,7 +33,7 @@ export default function Hero() {
 
       <div></div>
 
-      <div className=" -mt-40  absolute top-0 md:pr-20 w-full scale-105 z-20">
+      <div className=" -mt-[450px]  absolute top-0 md:pr-20 w-full scale-110 z-20">
         <Profile />
       </div>
     </div>
