@@ -43,7 +43,7 @@ export default function Production() {
         {items.map((item) => (
           <div
             key={item.id}
-           className="group relative w-[450px] h-[500px] p-10 rounded-xl shadow-2xl bg-[#0E0E0E] overflow-hidden flex flex-col items-center justify-center"
+           className="group relative w-[450px] h-[500px] p-10 rounded-xl shadow-2xl overflow-hidden flex flex-col items-center justify-center"
             // style={{
             //   backgroundColor: "rgba(255, 255, 255, 0.1)",
             //   backdropFilter: "blur(12px)",
