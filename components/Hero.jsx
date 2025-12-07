@@ -15,7 +15,7 @@ export default function Hero() {
         />
       </div>
 
-      {/* Foreground content */}
+      {/* Foreground content */} 
       <div className="fixed w-full px-24 py-12 font-outfit">
         <Navbar />
       </div>
