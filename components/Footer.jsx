@@ -53,11 +53,11 @@ export default function Footer() {
             </div>
 
             {/* 4 squares */}
-            <div className="flex gap-12 mr-32 items-end">
-              <div className="h-15 w-15 bg-[#DCC0F7] rounded-xl" />
-              <div className="h-15 w-15 bg-[#DCC0F7] rounded-xl" />
-              <div className="h-15 w-15 bg-[#DCC0F7] rounded-xl" />
-              <div className="h-15 w-15 bg-[#DCC0F7] rounded-xl" />
+            <div className="flex gap-8 mr-32 items-end">
+              <div className="h-12 w-12 bg-[#DCC0F7] rounded-xl" />
+              <div className="h-12 w-12 bg-[#DCC0F7] rounded-xl" />
+              <div className="h-12 w-12 bg-[#DCC0F7] rounded-xl" />
+              <div className="h-12 w-12 bg-[#DCC0F7] rounded-xl" />
             </div>
           </div>
         </div>
