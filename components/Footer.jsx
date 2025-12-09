@@ -29,25 +29,25 @@ export default function Footer() {
   </div>
 
         {/* changed this block only */}
-        <div className="flex w-full h-full items-end  pb-16 ">
+        <div className="flex w-full h-full items-end  pb-12 pl-12">
           {/* Logo */}
           <div className="flex items-end">
             <Image
               src="/logo.svg"
               alt="logo"
-              width={80}
-              height={80}
-              className="mx-32"
+              width={60}
+              height={60}
+              className="ml-30 mr-12"
             />
           </div>
 
           {/* Right side content */}
           <div className="flex justify-between gap-[50px] w-full items-end">
             <div className="text-[#DCC0F7] flex flex-col justify-end">
-              <span className="text-7xl font-funnel leading-none block">
+              <span className="text-4xl font-funnel leading-none block">
                 Vranch Sinha
               </span>
-              <div className="text-2xl pl-4 leading-none mt-2">
+              <div className="text-lg pl-4 leading-none mt-2">
                 PORTFOLIO VOL. 1
               </div>
             </div>
