@@ -85,8 +85,13 @@ export default function KeyNotes() {
   ];
 
   return (
-    <div className="h-auto md:h-screen text-white flex flex-col items-center">
-      <div className="pt-8 text-xl mt-12 tracking-wider">KEY NOTES</div>
+    <section
+      id="keynotes"
+      className="h-auto md:h-screen text-white flex flex-col items-center px-4 py-16 md:py-0"
+    >
+      <div className="pt-8 text-base sm:text-xl mt-12 tracking-wider">
+        KEY NOTES
+      </div>
 
       {/* Stagger container */}
       <motion.div
@@ -94,7 +99,7 @@ export default function KeyNotes() {
         variants={container}
         initial="hidden"
         animate={isInView ? "show" : "hidden"}
-        className="mt-12 md:mt-52 text-3xl md:text-5xl font-semibold   "
+        className="mt-16 md:mt-52 text-2xl sm:text-3xl md:text-5xl font-semibold w-full max-w-5xl"
       >
         {items.map((item) => (
           <motion.div
@@ -125,10 +130,10 @@ export default function KeyNotes() {
               >
                 <img
                   src={item.icon}
-                  className="absolute z-12"
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute z-12 w-[90px] h-[90px] sm:w-[120px] sm:h-[120px] md:w-[150px] md:h-[150px]"
                   style={{
-                    width: "150px",
-                    height: "150px",
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
@@ -151,6 +156,6 @@ export default function KeyNotes() {
           </motion.div>
         ))}
       </motion.div>
-    </div>
+    </section>
   );
 }

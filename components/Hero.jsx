@@ -1,13 +1,15 @@
-import Navbar from "./Navbar";
 import Profile from "./Profile";
 
 export default function Hero() {
   return (
-    <div className="relative bg-[#0E0E0E]  ">
-      {/* Background gradient blur */}
-      <div className="absolute inset-0 flex items-center z-0 justify-center ">
+    <section
+      id="home"
+      className="relative bg-[#0E0E0E] min-h-screen overflow-hidden"
+    >
+      {/* Background gradient blur — scales with viewport */}
+      <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
         <div
-          className="w-[1200px] h-[1100px] blur-[80px] rounded-full opacity-50 -translate-y-[30%]"
+          className="w-[140vw] max-w-[1200px] aspect-[12/11] blur-[60px] sm:blur-[80px] rounded-full opacity-50 -translate-y-[30%]"
           style={{
             backgroundImage:
               "radial-gradient(circle at center, #DCC0F9 31%, #894FC3 48%, #0E0E0E 100%)",
@@ -15,27 +17,27 @@ export default function Hero() {
         />
       </div>
 
-      {/* Foreground content */} 
-      <div className="fixed w-full px-24 py-12 font-outfit">
-        <Navbar />
-      </div>
-      <div className="h-screen flex items-center  text-white justify-evenly xl:text-2xl lg:text-lg mx-20">
-        <div className="flex items-center font-light w-full z-12 ">
-          <div className="w-2/5 text-center">
-            I craft digital experiences and brand identities,
-          </div>
-          <div className="w-1/3" >
-
-          </div>
-          <div className="w-1/3">I also love listening to music.</div>
-        </div>
-      </div>
-
-      <div></div>
-
-      <div className=" -mt-[510px]  absolute top-0 md:pr-36 w-full scale-110 z-20">
+      {/* 3D lanyard card — hangs from the top, centred.
+          The scene is 160vh tall; pull it up so the card hangs into view. */}
+      <div className="absolute top-0 z-20 -mt-[510px] w-full scale-110">
         <Profile />
       </div>
-    </div>
+
+      {/* Tagline */}
+      <div className="relative z-10 flex min-h-screen items-end md:items-center">
+        <div className="w-full px-6 sm:px-10 md:px-16 lg:px-24 pb-24 md:pb-0">
+          <div className="mx-auto flex max-w-7xl flex-col gap-3 text-center font-light text-white md:flex-row md:items-center md:justify-between lg:text-lg xl:text-2xl">
+            {/* Both lines sit in equal-width halves and hug the centred card,
+                so the gap from each line to the card is identical. */}
+            <p className="md:w-[37%] md:text-right">
+              I craft digital experiences and brand identities,
+            </p>
+            <p className="md:w-[37%] md:text-left">
+              I also love listening to music.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

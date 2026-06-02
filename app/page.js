@@ -11,15 +11,14 @@ import PortfolioScrollAnimation from "@/components/PortfolioScrollAnimation";
 export default function Home() {
   const { scrollYProgress } = useScroll();
 
-  // px-12 → px-0 animation
-  const paddingX = useTransform(scrollYProgress, [0, 1], ["70px", "0px"]);
-  // (px-12 = 48px)
+  // Inset the rising footer panel as the page scrolls — scaled down on mobile.
+  const paddingX = useTransform(scrollYProgress, [0, 1], ["40px", "0px"]);
 
   return (
     <>
       {/* Entire landing page */}
       <div className="bg-[#0E0E0E] overflow-x-hidden font-outfit">
-        <div className="fixed w-full px-24 py-12 z-50">
+        <div className="fixed top-0 left-0 w-full px-5 sm:px-8 md:px-12 lg:px-24 py-6 md:py-10 z-50">
           <Navbar />
         </div>
 

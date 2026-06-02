@@ -1,7 +1,7 @@
-
 import { Funnel_Display, Outfit } from "next/font/google";
 import "./globals.css";
-
+import SmoothScroll from "@/components/SmoothScroll";
+import LiquidGlassFilter from "@/components/LiquidGlassFilter";
 
 
 const funnelDisplay = Funnel_Display({
@@ -18,11 +18,18 @@ const outfit = Outfit({
 
 
 export const metadata = {
-  title: "Vranch sinha",
-  description: "vranch sinha portfolio",
+  title: "Vranch Sinha — Portfolio",
+  description:
+    "Vranch Sinha — designer crafting digital experiences and brand identities.",
   icons: {
     icon: "/logo.svg",
   },
+};
+
+export const viewport = {
+  themeColor: "#0E0E0E",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }) {
@@ -30,13 +37,13 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body
         className={`
-         
           ${funnelDisplay.variable}
           ${outfit.variable}
           antialiased
         `}
       >
-        {children}
+        <LiquidGlassFilter />
+        <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
   );

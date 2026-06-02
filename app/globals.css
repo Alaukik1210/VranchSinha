@@ -8,8 +8,9 @@
   --font-primary: var(--font-outfit);
   --font-heading: var(--font-funnel-display);
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Dark-only site: base tokens default to the portfolio's dark surface */
+  --background: #0e0e0e;
+  --foreground: oklch(0.985 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -81,8 +82,19 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+html {
+  scroll-behavior: smooth;
+  /* Dark base prevents white flashes / gaps — the whole site is dark themed */
+  background-color: #0e0e0e;
+  color-scheme: dark;
+}
+
 body {
   font-family: var(--font-primary);
+  background-color: #0e0e0e;
+  color: #ffffff;
+  /* Prevent any horizontal scrollbars from oversized decorative elements */
+  overflow-x: hidden;
 }
 
 .font-outfit {
@@ -91,6 +103,135 @@ body {
 
 .font-funnel {
   font-family: var(--font-funnel-display);
+}
+
+/* ---- Lenis smooth scroll ---- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ---- Apple "Liquid Glass" material ----
+   Modelled on iOS 26 / WWDC'25. Three optical traits beyond plain glassmorphism:
+     1. Refraction  — backdrop is bent via url(#liquid-lens) (see LiquidGlassFilter),
+                      applied through the element's `backdrop-filter` utilities.
+     2. Specular edge — a bright rim that catches light on the top-left and falls to
+                      a dark micro-bevel bottom-right, built from layered inset shadows.
+     3. Edge lensing — a gradient border (::before, masked) brighter where light hits.
+   The frost blur itself comes from Tailwind `backdrop-blur-*` utilities on the
+   element (these survive the Lightning CSS pipeline; a raw backdrop-filter here
+   does not), so this rule owns colour, gradient, edges and the moving sheen. */
+.liquid-glass {
+  position: relative;
+  isolation: isolate;
+  background-color: rgba(255, 255, 255, 0.04);
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.13) 0%,
+    rgba(255, 255, 255, 0.05) 32%,
+    rgba(255, 255, 255, 0.02) 62%,
+    rgba(255, 255, 255, 0.07) 100%
+  );
+  border: 1px solid transparent;
+  box-shadow:
+    /* bright top-left specular rim — light catching the glass edge */
+    inset 1.5px 1.5px 0 -0.5px rgba(255, 255, 255, 0.6),
+    /* soft inner top glow */
+    inset 0 1px 10px rgba(255, 255, 255, 0.2),
+    /* dark micro-bevel bottom-right for thickness/depth */
+    inset -1.5px -1.5px 1px -0.5px rgba(0, 0, 0, 0.3),
+    /* faint full inner outline keeps the pane crisp */
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    /* ambient grounding shadow */
+    0 10px 34px rgba(0, 0, 0, 0.36),
+    0 2px 8px rgba(0, 0, 0, 0.22);
+}
+
+/* Edge lensing: a 1px gradient ring, brighter on the lit (top-left) side,
+   dimmer on the shadowed side — the way light wraps a real glass border. */
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(255, 255, 255, 0.15) 28%,
+    rgba(255, 255, 255, 0.05) 55%,
+    rgba(255, 255, 255, 0.35) 100%
+  );
+  /* Longhands (not the `mask` shorthand) so mask-composite isn't reset to `add`
+     by Lightning CSS — cuts the gradient into a 1px ring along the border box. */
+  -webkit-mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  -webkit-mask-clip: content-box, border-box;
+  -webkit-mask-composite: xor;
+  mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  mask-clip: content-box, border-box;
+  mask-composite: exclude;
+  z-index: 1;
+}
+
+/* Moving specular sheen sweeping across the surface — the "liquid" highlight. */
+.liquid-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(
+    105deg,
+    transparent 28%,
+    rgba(255, 255, 255, 0.22) 47%,
+    rgba(255, 255, 255, 0.08) 53%,
+    transparent 64%
+  );
+  background-size: 250% 250%;
+  background-position: 100% 0;
+  opacity: 0.55;
+  transition: background-position 1s ease, opacity 1s ease;
+}
+
+.liquid-glass:hover::after {
+  background-position: 0 0;
+  opacity: 0.8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-glass::after {
+    transition: none;
+  }
+}
+
+/* ---- Respect reduced-motion across the whole site ---- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 .dark {
