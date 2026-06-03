@@ -166,6 +166,14 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
 
   // Frame updates
   useFrame((state, delta) => {
+    // Clamp the timestep. On high-refresh displays, after a tab refocus, or when
+    // a frame is dropped (common on some Windows laptops) `delta` can spike; the
+    // rope lerp below multiplies it by maxSpeed (50), so an unclamped spike pushes
+    // the lerp factor past 1, overshoots, and explodes the physics into NaN —
+    // which is what corrupts the lanyard geometry. Capping at ~1/30s keeps the
+    // simulation stable regardless of the device's refresh rate.
+    const dt = Math.min(delta, 1 / 30);
+
     // dragging logic
     if (dragged) {
       vec.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera);
@@ -198,7 +206,7 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
         const clamped = Math.max(0.1, Math.min(1, d));
         ref.current.lerped.lerp(
           ref.current.translation(),
-          delta * (minSpeed + clamped * (maxSpeed - minSpeed))
+          dt * (minSpeed + clamped * (maxSpeed - minSpeed))
         );
       });
 
@@ -207,7 +215,13 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
       curve.points[2].copy(j1.current.lerped);
       curve.points[3].copy(fixed.current.translation());
 
-      band.current.geometry.setPoints(curve.getPoints(32));
+      // Only feed finite points to the rope geometry. A transient NaN from the
+      // physics solver (e.g. a degenerate canvas size on the first frames before
+      // the ResizeObserver settles) would otherwise poison the MeshLine geometry,
+      // spamming computeBoundingSphere NaN warnings and dropping the lanyard.
+      if (curve.points.every((p) => Number.isFinite(p.x) && Number.isFinite(p.y) && Number.isFinite(p.z))) {
+        band.current.geometry.setPoints(curve.getPoints(32));
+      }
 
       ang.copy(card.current.angvel());
       rot.copy(card.current.rotation());

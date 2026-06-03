@@ -70,7 +70,7 @@ export default function Navbar() {
           {/* Resume — downloads the PDF directly */}
           <a
             href="/resume.pdf"
-            download="Vranch-Sinha-Resume.pdf"
+            download="Vranch Sinha Resume.pdf"
             className="rounded-full px-5 lg:px-6 py-2.5 lg:py-3 text-sm tracking-wide font-light bg-[#DCC0F7] text-[#0E0E0E] transition-all duration-300 hover:scale-105 hover:bg-white flex items-center gap-2"
           >
             <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden="true">
@@ -145,7 +145,7 @@ export default function Navbar() {
               {/* Resume — downloads the PDF directly */}
               <motion.a
                 href="/resume.pdf"
-                download="Vranch-Sinha-Resume.pdf"
+                download="Vranch Sinha Resume.pdf"
                 onClick={() => setOpen(false)}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}

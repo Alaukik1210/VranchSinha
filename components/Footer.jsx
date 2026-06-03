@@ -42,7 +42,7 @@ const socials = [
   {
     label: "Resume",
     href: "/resume.pdf",
-    download: "Vranch-Sinha-Resume.pdf",
+    download: "Vranch Sinha Resume.pdf",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-1/2 w-1/2" aria-hidden="true">
         <path

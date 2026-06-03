@@ -85,14 +85,25 @@ function Line({ item, isMobile }) {
 
   const active = isMobile ? inView : hovered;
 
+  // Mobile: each line animates itself as it scrolls into view (one after another).
+  // Desktop: the parent container drives a single staggered reveal via `lineAnim`.
+  const entrance = isMobile
+    ? {
+        initial: { opacity: 0, y: 26 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "0px 0px -18% 0px" },
+        transition: { duration: 0.6, ease: "easeOut" },
+      }
+    : { variants: lineAnim };
+
   return (
     <motion.div
       ref={lineRef}
-      variants={lineAnim}
+      {...entrance}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{ color: active ? item.hoverColor : "white" }}
-      className={`block text-center md:flex md:justify-center py-3 md:py-2 transition-colors duration-500 ease-out tracking-wider ${item.align}`}
+      className={`block text-center whitespace-nowrap md:flex md:justify-center py-3 md:py-2 transition-colors duration-500 ease-out tracking-wider ${item.align}`}
     >
       {item.prefix}
 
@@ -148,17 +159,17 @@ export default function KeyNotes() {
   return (
     <section
       id="keynotes"
-      className="h-auto md:h-screen text-white flex flex-col items-center justify-center px-4 py-16 md:py-0"
+      className="h-auto md:h-screen text-white flex flex-col items-center justify-center px-2 md:px-4 py-16 md:py-0"
     >
       <div className="text-base sm:text-xl tracking-wider">KEY NOTES</div>
 
       {/* Stagger container */}
       <motion.div
         ref={ref}
-        variants={container}
-        initial="hidden"
-        animate={isInView ? "show" : "hidden"}
-        className="mt-12 md:mt-20 text-2xl sm:text-3xl md:text-5xl font-semibold w-full max-w-5xl leading-tight md:leading-normal"
+        variants={isMobile ? undefined : container}
+        initial={isMobile ? false : "hidden"}
+        animate={isMobile ? undefined : isInView ? "show" : "hidden"}
+        className="mt-12 md:mt-20 text-[clamp(0.5rem,2.8vw,1.1rem)] md:text-5xl font-semibold w-full max-w-5xl leading-tight md:leading-normal"
       >
         {items.map((item) => (
           <Line key={item.id} item={item} isMobile={isMobile} />

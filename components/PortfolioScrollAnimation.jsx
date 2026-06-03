@@ -25,7 +25,7 @@ export default function PortfolioScrollAnimation() {
           />
         </div>
 
-        <div className="relative md:absolute md:top-[140vh] w-full rounded-t-[75px] overflow-hidden z-20 md:pointer-events-none">
+        <div className="relative md:absolute md:top-[140vh] w-full rounded-t-[75px] overflow-hidden z-20">
           <Footer />
         </div>
       </div>
