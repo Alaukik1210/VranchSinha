@@ -85,15 +85,12 @@ function Line({ item, isMobile }) {
 
   const active = isMobile ? inView : hovered;
 
-  // Mobile: each line animates itself as it scrolls into view (one after another).
+  // Mobile: no entrance animation — but explicitly pin the visible end-state so
+  // any leftover "hidden" inline styles (opacity:0/translateY) from the brief
+  // first render — before the matchMedia effect flips isMobile — are overridden.
   // Desktop: the parent container drives a single staggered reveal via `lineAnim`.
   const entrance = isMobile
-    ? {
-        initial: { opacity: 0, y: 26 },
-        whileInView: { opacity: 1, y: 0 },
-        viewport: { once: true, margin: "0px 0px -18% 0px" },
-        transition: { duration: 0.6, ease: "easeOut" },
-      }
+    ? { initial: false, animate: { opacity: 1, y: 0 } }
     : { variants: lineAnim };
 
   return (
@@ -146,7 +143,16 @@ function Line({ item, isMobile }) {
 export default function KeyNotes() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
-  const [isMobile, setIsMobile] = useState(false);
+  // Lazy-init from matchMedia on the client's FIRST render. Defaulting to false
+  // made mobile briefly render the desktop "hidden" entrance variant (opacity:0,
+  // translateY); when the effect later flipped isMobile, Framer left those inline
+  // styles in place, so the whole section stayed invisible on phones. Initialising
+  // correctly means the hidden variant is never applied on mobile.
+  const [isMobile, setIsMobile] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 767px)").matches
+  );
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
@@ -168,7 +174,7 @@ export default function KeyNotes() {
         ref={ref}
         variants={isMobile ? undefined : container}
         initial={isMobile ? false : "hidden"}
-        animate={isMobile ? undefined : isInView ? "show" : "hidden"}
+        animate={isMobile ? { opacity: 1 } : isInView ? "show" : "hidden"}
         className="mt-12 md:mt-20 text-[clamp(0.5rem,2.8vw,1.1rem)] md:text-5xl font-semibold w-full max-w-5xl leading-tight md:leading-normal"
       >
         {items.map((item) => (
