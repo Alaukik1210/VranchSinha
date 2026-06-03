@@ -67,15 +67,16 @@ const projects = [
       "It strengthened my understanding of designing data-heavy products — balancing usability with visual appeal and creating experiences where clarity becomes the most important feature. More than a sports platform, SportsNStats became an exercise in turning complexity into simplicity through thoughtful UX design.",
     ],
     metrics: null,
-    // Lower screens are shown inside straight, front-facing device mockups
-    // (matching the cover) instead of the tilted 3D-perspective renders.
-    deviceFrames: true,
+    // Lower screens are shown as flat screenshots — straight and centered on a
+    // soft accent-glow backdrop (matching the case-study poster) — instead of
+    // tilted 3D-perspective device renders.
+    showcase: true,
     screens: [
-      { src: "/projects/sns-properties.png", title: "Find the Venue", tag: "Properties", device: "monitor" },
-      { src: "/projects/sns-bookings.png", title: "Book the Hour", tag: "Bookings", device: "laptop" },
-      { src: "/projects/sns-tournaments.png", title: "Run the Tournament", tag: "Tournaments", device: "laptop" },
-      { src: "/projects/sns-onboarding.png", title: "Sign In Fast", tag: "Onboarding", device: "phone" },
-      { src: "/projects/sns-error.png", title: "Miss, Gracefully", tag: "Error States", device: "phone" },
+      { src: "/projects/sns-properties.png", title: "Find the Venue", tag: "Properties" },
+      { src: "/projects/sns-bookings.png", title: "Book the Hour", tag: "Bookings" },
+      { src: "/projects/sns-tournaments.png", title: "Run the Tournament", tag: "Tournaments" },
+      { src: "/projects/sns-onboarding.png", title: "Sign In Fast", tag: "Onboarding" },
+      { src: "/projects/sns-error.png", title: "Miss, Gracefully", tag: "Error States" },
     ],
   },
 ];
@@ -112,143 +113,50 @@ function Frame({ src, alt, label, accent, accentSoft, className = "", sizes, con
 }
 
 /* -------------------------------------------------------------------------
- * Front-facing device mockups — straight & centered, styled to match the
- * SportsNStats cover (white desktop monitor, silver laptop, black phone).
- * Each wraps the flat app screenshot via <Frame> so the missing-image
- * fallback still works.
+ * Showcase gallery — flat screenshots shown straight and centered on a soft
+ * accent-glow backdrop (matching the SportsNStats case-study poster), with no
+ * tilted device mockups. object-contain keeps each full screen visible and
+ * undistorted regardless of its native aspect ratio.
  * ---------------------------------------------------------------------- */
-
-function DeviceCaption({ title, tag, accentSoft }) {
+function ShowcaseGallery({ project }) {
   return (
-    <figcaption className="mt-4 flex items-baseline justify-center gap-2 text-center">
-      <span className="text-sm sm:text-base tracking-wide">{title}</span>
-      <span className="text-[11px] sm:text-xs tracking-wider" style={{ color: accentSoft }}>
-        {tag}
-      </span>
-    </figcaption>
-  );
-}
-
-/** Desktop monitor (iMac-style): white body, screen near top, chin + stand. */
-function Monitor({ screen, accent, accentSoft }) {
-  return (
-    <figure className="flex flex-col items-center w-full">
-      <div className="w-full max-w-3xl flex flex-col items-center">
-        {/* White body */}
-        <div className="w-full rounded-2xl bg-gradient-to-b from-[#f4f4f4] to-[#dcdcdc] p-[10px] pb-6 shadow-2xl">
-          <div className="relative w-full aspect-[16/10] rounded-lg overflow-hidden bg-[#0E0E0E]">
-            <Frame
-              src={screen.src}
-              alt={screen.title}
-              label={screen.title}
-              accent={accent}
-              accentSoft={accentSoft}
-              sizes="(max-width: 768px) 100vw, 60vw"
-              className="object-top"
-            />
+    <div className="flex flex-col items-center gap-12 md:gap-16">
+      {project.screens.map((screen, i) => (
+        <motion.figure
+          key={screen.title}
+          {...reveal}
+          transition={{ duration: 0.6, ease: "easeOut", delay: i * 0.06 }}
+          className="w-full flex flex-col items-center"
+        >
+          <div
+            className="relative w-full max-w-4xl rounded-3xl overflow-hidden p-6 sm:p-10 md:p-14"
+            style={{
+              background: `radial-gradient(110% 80% at 50% 100%, ${project.accent}26, transparent 60%), linear-gradient(180deg, #141414, #0E0E0E)`,
+            }}
+          >
+            {/* Hairline border to lift the panel off the page background */}
+            <div className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-white/5" />
+            <div className="relative w-full aspect-[16/10] flex items-center justify-center">
+              <Frame
+                src={screen.src}
+                alt={`${project.name} — ${screen.title}`}
+                label={screen.title}
+                accent={project.accent}
+                accentSoft={project.accentSoft}
+                sizes="(max-width: 768px) 100vw, 70vw"
+                contain
+                className="drop-shadow-2xl"
+              />
+            </div>
           </div>
-          <div className="mt-2 flex items-center justify-center">
-            <span className="text-[8px] sm:text-[10px] font-funnel tracking-[0.3em] text-gray-400">
-              SPORTSNSTATS
+          <figcaption className="mt-4 flex items-baseline justify-center gap-2 text-center">
+            <span className="text-sm sm:text-base tracking-wide">{screen.title}</span>
+            <span className="text-[11px] sm:text-xs tracking-wider" style={{ color: project.accentSoft }}>
+              {screen.tag}
             </span>
-          </div>
-        </div>
-        {/* Neck */}
-        <div className="h-7 w-12 bg-gradient-to-b from-[#d2d2d2] to-[#b4b4b4]" />
-        {/* Foot */}
-        <div className="h-2 w-40 rounded-full bg-[#c0c0c0]" />
-      </div>
-      <DeviceCaption title={screen.title} tag={screen.tag} accentSoft={accentSoft} />
-    </figure>
-  );
-}
-
-/** Laptop (MacBook-style): dark lid with screen, silver base + notch. */
-function Laptop({ screen, accent, accentSoft }) {
-  return (
-    <figure className="flex flex-col items-center w-full">
-      <div className="w-full max-w-xl flex flex-col items-center">
-        {/* Lid */}
-        <div className="w-full rounded-t-xl bg-[#1b1b1d] p-[8px] shadow-2xl">
-          <div className="relative w-full aspect-[16/10] rounded-md overflow-hidden bg-black">
-            <Frame
-              src={screen.src}
-              alt={screen.title}
-              label={screen.title}
-              accent={accent}
-              accentSoft={accentSoft}
-              sizes="(max-width: 768px) 100vw, 45vw"
-              className="object-top"
-            />
-          </div>
-        </div>
-        {/* Base */}
-        <div className="relative w-[112%] max-w-none h-3 rounded-b-lg bg-gradient-to-b from-[#cfcfcf] to-[#9c9c9c]">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-1.5 rounded-b-md bg-[#b6b6b6]" />
-        </div>
-      </div>
-      <DeviceCaption title={screen.title} tag={screen.tag} accentSoft={accentSoft} />
-    </figure>
-  );
-}
-
-/** Phone (iPhone-style): black body, rounded screen, dynamic-island pill. */
-function Phone({ screen, accent, accentSoft }) {
-  return (
-    <figure className="flex flex-col items-center w-full">
-      <div className="relative w-[180px] max-w-full aspect-[9/19] rounded-[2.2rem] bg-black p-[8px] shadow-2xl">
-        <div className="relative w-full h-full rounded-[1.7rem] overflow-hidden bg-white">
-          <Frame
-            src={screen.src}
-            alt={screen.title}
-            label={screen.title}
-            accent={accent}
-            accentSoft={accentSoft}
-            sizes="180px"
-            className="object-center"
-          />
-        </div>
-        {/* Dynamic island */}
-        <div className="absolute top-[16px] left-1/2 -translate-x-1/2 w-16 h-4 rounded-full bg-black z-10" />
-      </div>
-      <DeviceCaption title={screen.title} tag={screen.tag} accentSoft={accentSoft} />
-    </figure>
-  );
-}
-
-/** Lays SportsNStats screens out as straight, centered device mockups. */
-function DeviceGallery({ project }) {
-  const monitors = project.screens.filter((s) => s.device === "monitor");
-  const laptops = project.screens.filter((s) => s.device === "laptop");
-  const phones = project.screens.filter((s) => s.device === "phone");
-
-  return (
-    <div className="flex flex-col items-center gap-14 md:gap-20">
-      {monitors.map((s, i) => (
-        <motion.div key={s.title} {...reveal} transition={{ duration: 0.6, ease: "easeOut", delay: i * 0.08 }} className="w-full flex justify-center">
-          <Monitor screen={s} accent={project.accent} accentSoft={project.accentSoft} />
-        </motion.div>
+          </figcaption>
+        </motion.figure>
       ))}
-
-      {laptops.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-14 w-full place-items-center">
-          {laptops.map((s, i) => (
-            <motion.div key={s.title} {...reveal} transition={{ duration: 0.6, ease: "easeOut", delay: i * 0.08 }} className="w-full flex justify-center">
-              <Laptop screen={s} accent={project.accent} accentSoft={project.accentSoft} />
-            </motion.div>
-          ))}
-        </div>
-      )}
-
-      {phones.length > 0 && (
-        <div className="grid grid-cols-2 gap-8 sm:gap-12 w-full place-items-center max-w-2xl">
-          {phones.map((s, i) => (
-            <motion.div key={s.title} {...reveal} transition={{ duration: 0.6, ease: "easeOut", delay: i * 0.08 }} className="flex justify-center">
-              <Phone screen={s} accent={project.accent} accentSoft={project.accentSoft} />
-            </motion.div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
@@ -372,8 +280,8 @@ function CaseStudy({ project }) {
           The Work
         </motion.h4>
 
-        {project.deviceFrames ? (
-          <DeviceGallery project={project} />
+        {project.showcase ? (
+          <ShowcaseGallery project={project} />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
             {project.screens.map((screen, i) => (
