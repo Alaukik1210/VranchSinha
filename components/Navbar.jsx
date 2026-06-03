@@ -120,6 +120,27 @@ export default function Navbar() {
             className="fixed inset-0 z-40 md:hidden bg-[#0E0E0E]/80 backdrop-blur-xl"
             onClick={() => setOpen(false)}
           >
+            {/* Close / back button — sits above the overlay so the menu can always
+                be dismissed even though the hamburger toggle is behind the overlay. */}
+            <motion.button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setOpen(false)}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.25 }}
+              // `.liquid-glass` (in pillClasses) sets `position: relative`, which
+              // beats Tailwind's `.absolute` in the cascade — so pin the corner
+              // with an inline style that overrides it.
+              style={{ position: "absolute", top: "1.25rem", right: "1.25rem" }}
+              className={`${pillClasses} flex h-11 w-11 items-center justify-center`}
+            >
+              <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </motion.button>
+
             <motion.div
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}

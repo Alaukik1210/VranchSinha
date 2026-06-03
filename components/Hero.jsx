@@ -1,4 +1,5 @@
 import Profile from "./Profile";
+import LiquidEther from "./LiquidEther";
 
 export default function Hero() {
   return (
@@ -6,14 +7,16 @@ export default function Hero() {
       id="home"
       className="relative bg-[#0E0E0E] min-h-screen overflow-hidden"
     >
-      {/* Background gradient blur — scales with viewport */}
-      <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
-        <div
-          className="w-[140vw] max-w-[1200px] aspect-[12/11] blur-[60px] sm:blur-[80px] rounded-full opacity-50 -translate-y-[30%]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at center, #DCC0F9 31%, #894FC3 48%, #0E0E0E 100%)",
-          }}
+      {/* Animated liquid-ether background — fills the hero, sits behind the
+          lanyard card (z-20) and tagline (z-10). It's pointer-events-none so it
+          never blocks the card drag. Brand purples keep the original mood. */}
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <LiquidEther
+          colors={["#894FC3", "#DCC0F9", "#B19EEF"]}
+          autoDemo
+          autoSpeed={0.5}
+          autoIntensity={2.2}
+          resolution={0.5}
         />
       </div>
 

@@ -149,12 +149,17 @@ export default function Aurora({
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
+    // Fill the parent container (the footer panel) rather than the viewport.
+    // The footer panel applies `scale-110` (a transform) + `overflow-hidden`,
+    // and mobile browsers — iOS Safari in particular — fail to render/repaint a
+    // `position: fixed` element trapped inside a transformed, clipped ancestor,
+    // which left the aurora blank or frozen on phones. Absolute positioning is
+    // robust there, and the full-screen-triangle shader looks identical.
     gl.canvas.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw !important;
-      height: 100vh !important;
+      position: absolute;
+      inset: 0;
+      width: 100% !important;
+      height: 100% !important;
       pointer-events: none;
       z-index: 0;
     `;
