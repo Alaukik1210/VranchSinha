@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Canvas, extend, useFrame } from "@react-three/fiber";
+import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, useTexture, Environment, Lightformer } from "@react-three/drei";
 import {
   BallCollider,
@@ -31,9 +31,13 @@ export default function Profile({
       <Canvas
         camera={{ position, fov }}
         gl={{ alpha: transparent }}
-        onCreated={({ gl }) =>
-          gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)
-        }
+        onCreated={({ gl }) => {
+          gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1);
+          // Default to "pan-y": vertical swipes still scroll the page past the hero,
+          // while horizontal-ish drags engage the card. An active drag locks to
+          // "none" (set in onPointerDown) for full 2D movement.
+          gl.domElement.style.touchAction = "pan-y";
+        }}
       >
         <ambientLight intensity={Math.PI} />
 
@@ -85,6 +89,10 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
   const card = useRef();
   const visual = useRef(); // ← visual group ref (for rotation)
 
+  // The WebGL canvas element — we toggle its touch-action so the page can scroll
+  // normally on mobile, but locks to the card while a drag is actively happening.
+  const gl = useThree((s) => s.gl);
+
   // States
   const [dragged, drag] = useState(false);
   const [hovered, hover] = useState(false);
@@ -92,6 +100,14 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
   const [isDragging, setIsDragging] = useState(false);
   const [isSmall, setIsSmall] = useState(
     () => typeof window !== "undefined" && window.innerWidth < 1024
+  );
+
+  // Horizontal anchor for the lanyard rig. The card hangs ~2 units right of the
+  // anchor, so the anchor is offset left to centre it. Narrow (mobile) viewports
+  // map world units to more screen width, so they need a smaller offset than
+  // desktop or the card drifts left of centre. Set once at mount.
+  const [anchorX] = useState(
+    () => (typeof window !== "undefined" && window.innerWidth < 768 ? -0.1 : -1)
   );
 
   // 3D helpers
@@ -209,7 +225,7 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
 
   return (
     <>
-      <group position={[-1, 4, 0]}>
+      <group position={[anchorX, 4, 0]}>
         <RigidBody ref={fixed} {...segmentProps} type="fixed" />
 
         <RigidBody position={[0.5, 0, 0]} ref={j1} {...segmentProps}>
@@ -247,11 +263,16 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
             }}
             onPointerUp={(e) => {
               e.target.releasePointerCapture(e.pointerId);
+              // Restore vertical page scrolling once the drag ends.
+              if (gl) gl.domElement.style.touchAction = "pan-y";
               drag(false);
               setTimeout(() => setIsDragging(false), 100);
             }}
             onPointerDown={(e) => {
               e.target.setPointerCapture(e.pointerId);
+              // Lock touch scrolling on the canvas so a touch-drag moves the card
+              // instead of scrolling the page.
+              if (gl) gl.domElement.style.touchAction = "none";
               drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation())));
               setIsDragging(false);
             }}

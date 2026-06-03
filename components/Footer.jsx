@@ -40,11 +40,19 @@ const socials = [
     ),
   },
   {
-    label: "Behance",
-    href: "https://www.behance.net/",
+    label: "Resume",
+    href: "/resume.pdf",
+    download: "Vranch-Sinha-Resume.pdf",
     icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className="h-1/2 w-1/2" aria-hidden="true">
-        <path d="M8.3 11.3c.86-.43 1.32-1.08 1.32-2.05 0-1.9-1.42-2.65-3.3-2.65H1.5v10.7h5c2 0 3.78-.96 3.78-3.18 0-1.37-.65-2.38-1.98-2.82ZM4 8.4h1.9c.74 0 1.4.2 1.4 1.06 0 .8-.52 1.12-1.27 1.12H4V8.4Zm2.1 6.9H4v-2.55h2.16c.9 0 1.47.38 1.47 1.3 0 .9-.67 1.25-1.53 1.25ZM22.5 9.1h-5V7.85h5V9.1Zm.5 4.55c0-2.4-1.4-4.4-3.95-4.4-2.47 0-4.16 1.86-4.16 4.3 0 2.53 1.6 4.27 4.16 4.27 1.94 0 3.2-.87 3.8-2.73h-2.1c-.21.55-.78.86-1.6.86-1.07 0-1.74-.63-1.84-1.7H23c.01-.13 0-.4 0-.6Zm-5.66-.83c.13-.96.7-1.6 1.7-1.6 1.05 0 1.5.7 1.56 1.6h-3.26Z" />
+      <svg viewBox="0 0 24 24" fill="none" className="h-1/2 w-1/2" aria-hidden="true">
+        <path
+          d="M7 3h6l4 4v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        <path d="M13 3v4h4" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+        <path d="M9 12h6M9 15.5h6M9 8.5h2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       </svg>
     ),
   },
@@ -55,7 +63,7 @@ export default function Footer() {
     <div id="contact" className="w-full">
       {/* Album-cover panel: the footerbg art is scaled 110% and bleeds past the
           rounded top of the rising panel so it clips cleanly over Production. */}
-      <div className="h-[110vh] pt-12 w-full bg-[url('/footerbg.png')] scale-110 overflow-hidden bg-cover bg-center bg-no-repeat">
+      <div className="h-[110vh] pt-12 w-full bg-[url('/footerbg.png')] scale-110 origin-bottom overflow-hidden bg-cover bg-center bg-no-repeat">
         <div className="relative w-full h-full flex flex-col">
           {/* Aurora background */}
           <div className="absolute inset-0 -z-10">
@@ -106,11 +114,12 @@ export default function Footer() {
 
               {/* Social links */}
               <div className="flex gap-4 md:gap-6 items-end">
-                {socials.map(({ label, href, icon }) => (
+                {socials.map(({ label, href, icon, download }) => (
                   <a
                     key={label}
                     href={href}
                     aria-label={label}
+                    download={download}
                     target={href.startsWith("http") ? "_blank" : undefined}
                     rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
                     className="h-10 w-10 md:h-12 md:w-12 bg-[#DCC0F7] rounded-lg md:rounded-xl flex items-center justify-center text-[#0E0E0E] transition-transform duration-300 hover:scale-110 hover:-translate-y-1"

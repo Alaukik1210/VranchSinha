@@ -15,7 +15,7 @@ export default function SignatureTags() {
       id="signature-tags"
       className="h-auto md:h-screen text-white flex flex-col items-center relative px-6 py-16 md:py-0"
     >
-      <div className="text-base sm:text-xl pt-24 md:pt-60 tracking-wider">
+      <div className="text-base sm:text-xl pt-16 md:pt-40 tracking-wider">
         SIGNATURE TAGS
       </div>
 

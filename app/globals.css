@@ -105,6 +105,17 @@ body {
   font-family: var(--font-funnel-display);
 }
 
+/* ---- Hero 3D lanyard canvas touch behaviour ----
+   Default to pan-y so vertical swipes still scroll the page past the hero, while
+   horizontal-ish drags can grab the hanging card. A stylesheet rule (rather than
+   an inline style) is used because react-three-fiber rewrites the canvas's inline
+   styles on resize, which would wipe an inline touch-action. The drag handlers set
+   an inline `touch-action: none` during an active drag (inline beats this rule) and
+   clear it on release to fall back here. */
+#home canvas {
+  touch-action: pan-y;
+}
+
 /* ---- Lenis smooth scroll ---- */
 html.lenis,
 html.lenis body {

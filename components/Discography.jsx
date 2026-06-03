@@ -270,7 +270,7 @@ export default function Discography() {
   return (
     <section
       id="discography"
-      className="h-auto text-white flex flex-col items-center px-6 py-20 md:py-28"
+      className="h-auto text-white flex flex-col items-center px-6 py-16 md:py-20"
     >
       {/* Heading */}
       <motion.div
@@ -284,11 +284,11 @@ export default function Discography() {
         </span>
       </motion.div>
 
-      <div className="mt-14 md:mt-20 w-full flex flex-col items-center">
+      <div className="mt-10 md:mt-14 w-full flex flex-col items-center">
         {projects.map((project, i) => (
           <Fragment key={project.name}>
             {i > 0 && (
-              <div className="w-full max-w-6xl my-20 md:my-28 flex items-center gap-4">
+              <div className="w-full max-w-6xl my-14 md:my-20 flex items-center gap-4">
                 <div className="flex-1 h-px bg-white/10" />
                 <span className="text-[11px] tracking-[0.3em] text-gray-600 uppercase">
                   More Work

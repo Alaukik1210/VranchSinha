@@ -13,9 +13,9 @@ export default function Playlist() {
   return (
     <section
       id="playlist"
-      className="h-auto md:min-h-screen text-white flex flex-col items-center px-6 py-16 md:py-24"
+      className="h-auto md:min-h-screen text-white flex flex-col items-center px-6 py-16 md:py-20"
     >
-      <div className="pt-8 text-base sm:text-xl mt-12 tracking-wider pb-12 md:pb-20">
+      <div className="text-base sm:text-xl mt-6 tracking-wider pb-8 md:pb-12">
         PLAY-LISTS
       </div>
 
