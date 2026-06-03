@@ -72,11 +72,11 @@ const projects = [
     // tilted 3D-perspective device renders.
     showcase: true,
     screens: [
-      { src: "/projects/sns-properties.png", title: "Find the Venue", tag: "Properties" },
-      { src: "/projects/sns-bookings.png", title: "Book the Hour", tag: "Bookings" },
-      { src: "/projects/sns-tournaments.png", title: "Run the Tournament", tag: "Tournaments" },
-      { src: "/projects/sns-onboarding.png", title: "Sign In Fast", tag: "Onboarding" },
-      { src: "/projects/sns-error.png", title: "Miss, Gracefully", tag: "Error States" },
+      { src: "/projects/sns-properties.jpg", title: "Find the Venue", tag: "Properties" },
+      { src: "/projects/sns-bookings.jpg", title: "Book the Hour", tag: "Bookings" },
+      { src: "/projects/sns-tournaments.jpg", title: "Run the Tournament", tag: "Tournaments" },
+      { src: "/projects/sns-onboarding.jpg", title: "Sign In Fast", tag: "Onboarding" },
+      { src: "/projects/sns-error.jpg", title: "Miss, Gracefully", tag: "Error States" },
     ],
   },
 ];
