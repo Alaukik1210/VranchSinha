@@ -14,6 +14,13 @@ import { motion } from "framer-motion";
  *     genasis-pricing.jpg   → phone pricing screen
  *     genasis-audience.jpg  → tablet "Who is this for?" screen
  *     genasis-logo.png      → standalone "G" logo on dark
+ *   RAREMATE (captured live from raremate.in):
+ *     raremate-cover.jpg       → hero + "choose your concern" panel
+ *     raremate-shop.jpg        → filterable product grid
+ *     raremate-product.jpg     → product detail overlay
+ *     raremate-doctor.jpg      → curator's note (Dr. Sanjay Patel)
+ *     raremate-standards.jpg   → four standards + sourcing register
+ *     raremate-prescribers.jpg → cosmetologist carousel
  *   SportsNStats:
  *     sns-cover.png         → multi-device "Players. Courts. Connected." hero
  *     sns-properties.png    → iMac venue/properties dashboard
@@ -53,6 +60,31 @@ const projects = [
     ],
   },
   {
+    name: "RAREMATE",
+    badge: "LIVE — RAREMATE.IN",
+    tagline: "Cosmetologist-Curated Luxury Skincare",
+    accent: "#CFA75F",
+    accentSoft: "#DDC089",
+    cover: "/projects/raremate-cover.jpg",
+    href: "https://raremate.in",
+    hrefLabel: "raremate.in",
+    roles: ["Brand Identity", "Web Design", "Next.js Build"],
+    summary:
+      "A luxury skincare house that needed to look like one. I designed and shipped the whole thing — identity, art direction, and the live single-page site at raremate.in — on a white canvas, warm cream panels, and one confident bronzed gold.",
+    body: [
+      "Skincare pages usually drown you: forty products, a wall of claims, no way in. RAREMATE sells twelve formulas, so the site leads with the question a buyer actually has — what's my concern? — and routes from there into a filterable shelf where every product opens into its own detail view.",
+      "Trust is the other half of the job. The curator's note, the four standards, the named supplier houses, and the cosmetologist peer proof are all sequenced so the claims land before the ask. Built on Next.js 16 and Tailwind 4, with checkout deliberately handed off to WhatsApp — the channel the customer was already going to use.",
+    ],
+    metrics: null,
+    screens: [
+      { src: "/projects/raremate-shop.jpg", title: "The Shelf", tag: "Product Grid" },
+      { src: "/projects/raremate-product.jpg", title: "One Formula", tag: "Detail View" },
+      { src: "/projects/raremate-doctor.jpg", title: "The Curator", tag: "Trust" },
+      { src: "/projects/raremate-standards.jpg", title: "Four Standards", tag: "Proof" },
+      { src: "/projects/raremate-prescribers.jpg", title: "Peer Proof", tag: "Social Proof" },
+    ],
+  },
+  {
     name: "SportsNStats",
     badge: "CONCEPT PROJECT",
     tagline: "Making Sports Analytics More Accessible",
@@ -67,16 +99,15 @@ const projects = [
       "It strengthened my understanding of designing data-heavy products — balancing usability with visual appeal and creating experiences where clarity becomes the most important feature. More than a sports platform, SportsNStats became an exercise in turning complexity into simplicity through thoughtful UX design.",
     ],
     metrics: null,
-    // Lower screens are shown as flat screenshots — straight and centered on a
-    // soft accent-glow backdrop (matching the case-study poster) — instead of
-    // tilted 3D-perspective device renders.
-    showcase: true,
+    // Uses the shared multi-column grid (same as Genasis). The .png poster
+    // renders are 16:10 device mockups on dark, which sit far better in a
+    // 3:2 grid cell than the raw flat .jpg screen captures did.
     screens: [
-      { src: "/projects/sns-properties.jpg", title: "Find the Venue", tag: "Properties" },
-      { src: "/projects/sns-bookings.jpg", title: "Book the Hour", tag: "Bookings" },
-      { src: "/projects/sns-tournaments.jpg", title: "Run the Tournament", tag: "Tournaments" },
-      { src: "/projects/sns-onboarding.jpg", title: "Sign In Fast", tag: "Onboarding" },
-      { src: "/projects/sns-error.jpg", title: "Miss, Gracefully", tag: "Error States" },
+      { src: "/projects/sns-properties.png", title: "Find the Venue", tag: "Properties" },
+      { src: "/projects/sns-bookings.png", title: "Book the Hour", tag: "Bookings" },
+      { src: "/projects/sns-tournaments.png", title: "Run the Tournament", tag: "Tournaments" },
+      { src: "/projects/sns-onboarding.png", title: "Sign In Fast", tag: "Onboarding" },
+      { src: "/projects/sns-error.png", title: "Miss, Gracefully", tag: "Error States" },
     ],
   },
 ];
@@ -109,55 +140,6 @@ function Frame({ src, alt, label, accent, accentSoft, className = "", sizes, con
       className={`${contain ? "object-contain p-6" : "object-cover"} ${className}`}
       onError={() => setErrored(true)}
     />
-  );
-}
-
-/* -------------------------------------------------------------------------
- * Showcase gallery — flat screenshots shown straight and centered on a soft
- * accent-glow backdrop (matching the SportsNStats case-study poster), with no
- * tilted device mockups. object-contain keeps each full screen visible and
- * undistorted regardless of its native aspect ratio.
- * ---------------------------------------------------------------------- */
-function ShowcaseGallery({ project }) {
-  return (
-    <div className="flex flex-col items-center gap-12 md:gap-16">
-      {project.screens.map((screen, i) => (
-        <motion.figure
-          key={screen.title}
-          {...reveal}
-          transition={{ duration: 0.6, ease: "easeOut", delay: i * 0.06 }}
-          className="w-full flex flex-col items-center"
-        >
-          <div
-            className="relative w-full max-w-4xl rounded-3xl overflow-hidden p-6 sm:p-10 md:p-14"
-            style={{
-              background: `radial-gradient(110% 80% at 50% 100%, ${project.accent}26, transparent 60%), linear-gradient(180deg, #141414, #0E0E0E)`,
-            }}
-          >
-            {/* Hairline border to lift the panel off the page background */}
-            <div className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-white/5" />
-            <div className="relative w-full aspect-[16/10] flex items-center justify-center">
-              <Frame
-                src={screen.src}
-                alt={`${project.name} — ${screen.title}`}
-                label={screen.title}
-                accent={project.accent}
-                accentSoft={project.accentSoft}
-                sizes="(max-width: 768px) 100vw, 70vw"
-                contain
-                className="drop-shadow-2xl"
-              />
-            </div>
-          </div>
-          <figcaption className="mt-4 flex items-baseline justify-center gap-2 text-center">
-            <span className="text-sm sm:text-base tracking-wide">{screen.title}</span>
-            <span className="text-[11px] sm:text-xs tracking-wider" style={{ color: project.accentSoft }}>
-              {screen.tag}
-            </span>
-          </figcaption>
-        </motion.figure>
-      ))}
-    </div>
   );
 }
 
@@ -227,6 +209,20 @@ function CaseStudy({ project }) {
           <p className="mt-6 text-sm sm:text-base text-gray-300 leading-relaxed max-w-md">
             {project.summary}
           </p>
+
+          {/* Live link — only for projects that are actually shipped. */}
+          {project.href ? (
+            <a
+              href={project.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex w-fit items-center gap-2 text-sm tracking-wide border-b border-white/20 pb-1 transition-colors hover:border-current"
+              style={{ color: project.accentSoft }}
+            >
+              {project.hrefLabel ?? "Visit the site"}
+              <span aria-hidden="true">↗</span>
+            </a>
+          ) : null}
         </motion.div>
       </div>
 
@@ -280,16 +276,24 @@ function CaseStudy({ project }) {
           The Work
         </motion.h4>
 
-        {project.showcase ? (
-          <ShowcaseGallery project={project} />
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
-            {project.screens.map((screen, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
+          {project.screens.map((screen, i) => {
+            // With an odd number of screens the last one would sit alone in
+            // the left column. Span both and center it instead, so the grid
+            // still reads as balanced.
+            const orphan =
+              project.screens.length % 2 === 1 && i === project.screens.length - 1;
+
+            return (
               <motion.figure
                 key={screen.title}
                 {...reveal}
                 transition={{ duration: 0.6, ease: "easeOut", delay: i * 0.08 }}
-                className="group flex flex-col"
+                className={`group flex flex-col ${
+                  orphan
+                    ? "sm:col-span-2 sm:mx-auto sm:w-[calc(50%-0.625rem)] md:w-[calc(50%-0.75rem)]"
+                    : ""
+                }`}
               >
                 <div className="relative w-full aspect-[3/2] rounded-2xl overflow-hidden shadow-lg">
                   <Frame
@@ -315,9 +319,9 @@ function CaseStudy({ project }) {
                   </span>
                 </figcaption>
               </motion.figure>
-            ))}
-          </div>
-        )}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
