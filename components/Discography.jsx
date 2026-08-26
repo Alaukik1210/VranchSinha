@@ -21,13 +21,14 @@ import { motion } from "framer-motion";
  *     raremate-doctor.jpg      → curator's note (Dr. Sanjay Patel)
  *     raremate-standards.jpg   → four standards + sourcing register
  *     raremate-prescribers.jpg → cosmetologist carousel
- *   SportsNStats:
+ *   SportsNStats (flat .jpg captures — the .png siblings are the same
+ *   screens as tilted 3D device renders, kept only for the cover):
  *     sns-cover.png         → multi-device "Players. Courts. Connected." hero
- *     sns-properties.png    → iMac venue/properties dashboard
- *     sns-bookings.png      → MacBook court-booking interface
- *     sns-tournaments.png   → MacBook tournament standings
- *     sns-onboarding.png    → iPhone phone-number sign-in
- *     sns-error.png         → iPhone friendly error state
+ *     sns-properties.jpg    → venue/properties dashboard
+ *     sns-bookings.jpg      → court-booking interface
+ *     sns-tournaments.jpg   → tournament standings
+ *     sns-onboarding.jpg    → phone-number sign-in
+ *     sns-error.jpg         → friendly error state
  * Any missing image gracefully falls back to an accent panel, so the
  * section always looks complete.
  */
@@ -99,21 +100,34 @@ const projects = [
       "It strengthened my understanding of designing data-heavy products — balancing usability with visual appeal and creating experiences where clarity becomes the most important feature. More than a sports platform, SportsNStats became an exercise in turning complexity into simplicity through thoughtful UX design.",
     ],
     metrics: null,
-    // Uses the shared multi-column grid (same as Genasis). The .png poster
-    // renders are 16:10 device mockups on dark, which sit far better in a
-    // 3:2 grid cell than the raw flat .jpg screen captures did.
+    // Uses the shared multi-column grid (same as Genasis), but with the flat
+    // .jpg screen captures rather than the .png poster renders — the posters
+    // sit the devices at a 3D tilt, and these read better straight on.
+    // Their native ratios vary (~3:2 down to 1280x2007), so the crop is
+    // top-anchored to keep each screen's header and branding in frame.
+    screenObjectPosition: "top",
     screens: [
-      { src: "/projects/sns-properties.png", title: "Find the Venue", tag: "Properties" },
-      { src: "/projects/sns-bookings.png", title: "Book the Hour", tag: "Bookings" },
-      { src: "/projects/sns-tournaments.png", title: "Run the Tournament", tag: "Tournaments" },
-      { src: "/projects/sns-onboarding.png", title: "Sign In Fast", tag: "Onboarding" },
-      { src: "/projects/sns-error.png", title: "Miss, Gracefully", tag: "Error States" },
+      { src: "/projects/sns-properties.jpg", title: "Find the Venue", tag: "Properties" },
+      { src: "/projects/sns-bookings.jpg", title: "Book the Hour", tag: "Bookings" },
+      { src: "/projects/sns-tournaments.jpg", title: "Run the Tournament", tag: "Tournaments" },
+      { src: "/projects/sns-onboarding.jpg", title: "Sign In Fast", tag: "Onboarding" },
+      { src: "/projects/sns-error.jpg", title: "Miss, Gracefully", tag: "Error States" },
     ],
   },
 ];
 
 /** Image with graceful accent-gradient fallback if the file is missing. */
-function Frame({ src, alt, label, accent, accentSoft, className = "", sizes, contain = false }) {
+function Frame({
+  src,
+  alt,
+  label,
+  accent,
+  accentSoft,
+  className = "",
+  sizes,
+  contain = false,
+  objectPosition,
+}) {
   const [errored, setErrored] = useState(false);
 
   if (!src || errored) {
@@ -138,6 +152,7 @@ function Frame({ src, alt, label, accent, accentSoft, className = "", sizes, con
       fill
       sizes={sizes}
       className={`${contain ? "object-contain p-6" : "object-cover"} ${className}`}
+      style={objectPosition ? { objectPosition } : undefined}
       onError={() => setErrored(true)}
     />
   );
@@ -304,6 +319,7 @@ function CaseStudy({ project }) {
                     accentSoft={project.accentSoft}
                     sizes="(max-width: 640px) 100vw, 50vw"
                     contain={screen.contain}
+                    objectPosition={screen.objectPosition ?? project.screenObjectPosition}
                     className="transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
