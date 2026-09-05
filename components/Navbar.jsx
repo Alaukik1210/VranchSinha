@@ -5,10 +5,7 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 
 const navItems = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#keynotes" },
-  { label: "Work", href: "#discography" },
-  { label: "Contact", href: "#contact" },
+  { label: "Connect", href: "https://www.linkedin.com/in/vranchsinha", external: true },
 ];
 
 const pillClasses =
@@ -26,18 +23,6 @@ export default function Navbar() {
       document.body.style.overflow = "";
     };
   }, [open]);
-
-  // Nav clicks. "Contact" must land at the very bottom of the rising footer —
-  // the #contact element sits at the TOP of a 110vh panel, so a plain hash jump
-  // stops short. Scroll to the document's max instead so the contact bar is in view.
-  const handleNav = (href) => (e) => {
-    setOpen(false);
-    if (href !== "#contact") return; // let Lenis handle the rest natively
-    e.preventDefault();
-    const bottom = document.documentElement.scrollHeight;
-    if (window.lenis) window.lenis.scrollTo(bottom, { duration: 1.4, lock: true });
-    else window.scrollTo({ top: bottom, behavior: "smooth" });
-  };
 
   return (
     <nav className="font-outfit">
@@ -60,7 +45,8 @@ export default function Navbar() {
             <a
               key={item.label}
               href={item.href}
-              onClick={handleNav(item.href)}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
               className={`${pillClasses} px-5 lg:px-6 py-2.5 lg:py-3 text-sm`}
             >
               {item.label}
@@ -71,12 +57,8 @@ export default function Navbar() {
           <a
             href="/resume.pdf"
             download="Vranch Sinha Resume.pdf"
-            className="rounded-full px-5 lg:px-6 py-2.5 lg:py-3 text-sm tracking-wide font-light bg-[#DCC0F7] text-[#0E0E0E] transition-all duration-300 hover:scale-105 hover:bg-white flex items-center gap-2"
+            className={`${pillClasses} px-5 lg:px-6 py-2.5 lg:py-3 text-sm`}
           >
-            <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden="true">
-              <path d="M12 3v10m0 0 4-4m-4 4-4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M5 17v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
             Resume
           </a>
         </div>
@@ -153,7 +135,9 @@ export default function Navbar() {
                 <motion.a
                   key={item.label}
                   href={item.href}
-                  onClick={handleNav(item.href)}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
+                  onClick={() => setOpen(false)}
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 + i * 0.08, duration: 0.4 }}
@@ -171,12 +155,8 @@ export default function Navbar() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 + navItems.length * 0.08, duration: 0.4 }}
-                className="mt-2 flex items-center gap-2 rounded-full bg-[#DCC0F7] px-7 py-3 text-2xl font-light tracking-wide text-[#0E0E0E]"
+                className={`${pillClasses} mt-2 px-7 py-3 text-2xl`}
               >
-                <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
-                  <path d="M12 3v10m0 0 4-4m-4 4-4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M5 17v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                </svg>
                 Resume
               </motion.a>
             </motion.div>

@@ -400,13 +400,44 @@ export default function LiquidEther({
     uniform sampler2D velocity;
     uniform sampler2D palette;
     uniform vec4 bgColor;
+    uniform vec2 texelSize;
     varying vec2 uv;
+
+    // The sim runs at a fraction of screen resolution, so plain bilinear
+    // upsampling shows the grid as jagged edges. Reconstruct with a cubic
+    // B-spline instead (4 bilinear taps) for a smooth, artifact-free field.
+    vec2 sampleVelocity(vec2 p){
+      vec2 samplePos = p / texelSize - 0.5;
+      vec2 tc = floor(samplePos);
+      vec2 f = samplePos - tc;
+      vec2 f2 = f * f;
+      vec2 f3 = f2 * f;
+      vec2 w0 = (1.0 / 6.0) * (-f3 + 3.0 * f2 - 3.0 * f + 1.0);
+      vec2 w1 = (1.0 / 6.0) * (3.0 * f3 - 6.0 * f2 + 4.0);
+      vec2 w2 = (1.0 / 6.0) * (-3.0 * f3 + 3.0 * f2 + 3.0 * f + 1.0);
+      vec2 w3 = (1.0 / 6.0) * f3;
+      vec2 g0 = w0 + w1;
+      vec2 g1 = w2 + w3;
+      vec2 h0 = (tc + 0.5 + w1 / g0 - 1.0) * texelSize;
+      vec2 h1 = (tc + 0.5 + w3 / g1 + 1.0) * texelSize;
+      vec2 v00 = texture2D(velocity, vec2(h0.x, h0.y)).xy;
+      vec2 v10 = texture2D(velocity, vec2(h1.x, h0.y)).xy;
+      vec2 v01 = texture2D(velocity, vec2(h0.x, h1.y)).xy;
+      vec2 v11 = texture2D(velocity, vec2(h1.x, h1.y)).xy;
+      return mix(mix(v00, v10, g1.x), mix(v01, v11, g1.x), g1.y);
+    }
+
     void main(){
-    vec2 vel = texture2D(velocity, uv).xy;
+    vec2 vel = sampleVelocity(uv);
     float lenv = clamp(length(vel), 0.0, 1.0);
-    vec3 c = texture2D(palette, vec2(lenv, 0.5)).rgb;
-    vec3 outRGB = mix(bgColor.rgb, c, lenv);
-    float outA = mix(bgColor.a, 1.0, lenv);
+    // gentle S-curve eases the rim into the background instead of a hard ramp
+    float t = mix(lenv, lenv * lenv * (3.0 - 2.0 * lenv), 0.5);
+    vec3 c = texture2D(palette, vec2(t, 0.5)).rgb;
+    vec3 outRGB = mix(bgColor.rgb, c, t);
+    float outA = mix(bgColor.a, 1.0, t);
+    // sub-LSB dither breaks up 8-bit banding on the dark falloff
+    float n = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
+    outRGB += (n - 0.5) * (2.0 / 255.0);
     gl_FragColor = vec4(outRGB, outA);
 }
 `;
@@ -898,7 +929,13 @@ export default function LiquidEther({
             velocity: { value: this.simulation.fbos.vel_0.texture },
             boundarySpace: { value: new THREE.Vector2() },
             palette: { value: paletteTex },
-            bgColor: { value: bgVec4 }
+            bgColor: { value: bgVec4 },
+            texelSize: {
+              value: new THREE.Vector2(
+                1 / this.simulation.fboSize.x,
+                1 / this.simulation.fboSize.y
+              )
+            }
           }
         }));
         this.scene.add(this.output);
@@ -910,6 +947,11 @@ export default function LiquidEther({
         this.simulation.resize();
       }
       render() {
+        // fboSize can change via resize or live prop updates — keep in sync
+        this.output.material.uniforms.texelSize.value.set(
+          1 / this.simulation.fboSize.x,
+          1 / this.simulation.fboSize.y
+        );
         Common.renderer.setRenderTarget(null);
         Common.renderer.render(this.scene, this.camera);
       }

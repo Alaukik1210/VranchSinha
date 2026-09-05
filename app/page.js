@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import KeyNotes from "@/components/KeyNotes";
 import Discography from "@/components/Discography";
 import SignatureTags from "@/components/SignatureTags";
-import Playlist from "@/components/Playlist";
+import CaseStudy from "@/components/CaseStudy";
 import PortfolioScrollAnimation from "@/components/PortfolioScrollAnimation";
 
 export default function Home() {
@@ -26,7 +26,7 @@ export default function Home() {
         <KeyNotes />
         <Discography />
         <SignatureTags />
-        <Playlist />
+        <CaseStudy />
       </div>
 
       {/* Scroll animation OUTSIDE and ABOVE the page */}

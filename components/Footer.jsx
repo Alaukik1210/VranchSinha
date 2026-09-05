@@ -7,7 +7,7 @@ import GradientText from "./GradientText";
 // Bottom-right social links. Replace the placeholder hrefs with your real ones.
 const socials = [
   {
-    label: "Mail",
+    label: "Email",
     href: "mailto:vranchhsinha@gmail.com",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-1/2 w-1/2" aria-hidden="true">
@@ -17,7 +17,7 @@ const socials = [
     ),
   },
   {
-    label: "Contact",
+    label: "Call",
     href: "tel:+919336771392",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-1/2 w-1/2" aria-hidden="true">
@@ -45,14 +45,8 @@ const socials = [
     download: "Vranch Sinha Resume.pdf",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-1/2 w-1/2" aria-hidden="true">
-        <path
-          d="M7 3h6l4 4v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinejoin="round"
-        />
-        <path d="M13 3v4h4" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-        <path d="M9 12h6M9 15.5h6M9 8.5h2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M12 3v10m0 0 4-4m-4 4-4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M5 17v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       </svg>
     ),
   },
@@ -83,7 +77,7 @@ export default function Footer() {
               showBorder={false}
               className="custom-class"
             >
-              Get in Touch
+              Let&apos;s make cool sh*t
             </GradientText>
           </div>
 
@@ -122,9 +116,14 @@ export default function Footer() {
                     download={download}
                     target={href.startsWith("http") ? "_blank" : undefined}
                     rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-                    className="h-10 w-10 md:h-12 md:w-12 bg-[#DCC0F7] rounded-lg md:rounded-xl flex items-center justify-center text-[#0E0E0E] transition-transform duration-300 hover:scale-110 hover:-translate-y-1"
+                    className="group liquid-glass [backdrop-filter:blur(7px)_saturate(1.8)_url(#liquid-lens)] [-webkit-backdrop-filter:blur(16px)_saturate(1.6)] h-10 w-10 md:h-12 md:w-12 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:-translate-y-1"
                   >
                     {icon}
+                    {/* Hover label */}
+                    <span className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-full bg-[#0E0E0E]/70 px-3 py-1 text-xs tracking-wide text-white opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0"
+                    >
+                      {label}
+                    </span>
                   </a>
                 ))}
               </div>
