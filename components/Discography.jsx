@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Fragment, useState } from "react";
 import { motion } from "framer-motion";
+import Lightbox from "@/components/Lightbox";
 
 /**
  * DISCOGRAPHY — featured case studies.
@@ -32,7 +33,7 @@ import { motion } from "framer-motion";
  * Any missing image gracefully falls back to an accent panel, so the
  * section always looks complete.
  */
-const projects = [
+export const projects = [
   {
     name: "Genasis",
     badge: "FEATURED RELEASE",
@@ -165,16 +166,40 @@ const reveal = {
 };
 
 /** A single case study: cover + meta, optional metrics, narrative, gallery. */
-function CaseStudy({ project }) {
+export function CaseStudy({ project }) {
+  const showcase = project.showcase;
+
+  // Everything viewable in this case study, in reading order: the cover (or
+  // the showcase phones' screens) followed by the gallery.
+  const viewable = showcase
+    ? showcase.phones.flat()
+    : [
+        { src: project.cover, title: project.name, tag: project.tagline },
+        ...project.screens,
+      ];
+  const [open, setOpen] = useState(null);
+  const openSrc = (src) => setOpen(Math.max(0, viewable.findIndex((v) => v.src === src)));
+
   return (
     <div className="w-full max-w-6xl flex flex-col gap-14 md:gap-20">
+      <Lightbox
+        items={viewable}
+        index={open}
+        onClose={() => setOpen(null)}
+        accent={project.accentSoft}
+      />
+
       {/* FEATURED ------------------------------------------------------- */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
         {/* Cover */}
-        <motion.div
+        {showcase ? null : (
+        <motion.button
+          type="button"
+          onClick={() => setOpen(0)}
+          aria-label={`Open ${project.name} cover`}
           {...reveal}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="group relative w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl order-1"
+          className="group relative w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl order-1 cursor-zoom-in text-left"
         >
           <Frame
             src={project.cover}
@@ -191,14 +216,22 @@ function CaseStudy({ project }) {
           >
             {project.badge}
           </span>
-        </motion.div>
+        </motion.button>
+        )}
 
         {/* Meta */}
         <motion.div
           {...reveal}
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
-          className="flex flex-col order-2"
+          // Beside a cover the meta is one column; under a full-width
+          // showcase it spreads across both — identity left, story right.
+          className={
+            showcase
+              ? "md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-12 order-2"
+              : "flex flex-col order-2"
+          }
         >
+          <div className="flex flex-col">
           <h3 className="font-funnel text-4xl sm:text-5xl md:text-6xl font-light leading-none">
             {project.name}
           </h3>
@@ -220,8 +253,12 @@ function CaseStudy({ project }) {
               </span>
             ))}
           </div>
+          </div>
 
-          <p className="mt-6 text-sm sm:text-base text-gray-300 leading-relaxed max-w-md">
+          <div className="flex flex-col">
+          <p
+            className={`mt-6 ${showcase ? "md:mt-0" : ""} text-sm sm:text-base text-gray-300 leading-relaxed max-w-md`}
+          >
             {project.summary}
           </p>
 
@@ -238,6 +275,7 @@ function CaseStudy({ project }) {
               <span aria-hidden="true">↗</span>
             </a>
           ) : null}
+          </div>
         </motion.div>
       </div>
 
@@ -282,6 +320,7 @@ function CaseStudy({ project }) {
       </div>
 
       {/* SCREEN GALLERY ------------------------------------------------- */}
+      {project.screens.length ? (
       <div className="flex flex-col gap-8">
         <motion.h4
           {...reveal}
@@ -310,7 +349,12 @@ function CaseStudy({ project }) {
                     : ""
                 }`}
               >
-                <div className="relative w-full aspect-[3/2] rounded-2xl overflow-hidden shadow-lg">
+                <button
+                  type="button"
+                  onClick={() => openSrc(screen.src)}
+                  aria-label={`Open ${screen.title}`}
+                  className="relative block w-full aspect-[3/2] rounded-2xl overflow-hidden shadow-lg cursor-zoom-in"
+                >
                   <Frame
                     src={screen.src}
                     alt={`${project.name} — ${screen.title}`}
@@ -322,7 +366,7 @@ function CaseStudy({ project }) {
                     objectPosition={screen.objectPosition ?? project.screenObjectPosition}
                     className="transition-transform duration-500 group-hover:scale-105"
                   />
-                </div>
+                </button>
                 <figcaption className="mt-4 flex items-baseline justify-between gap-2">
                   <span className="text-sm sm:text-base tracking-wide">
                     {screen.title}
@@ -339,6 +383,7 @@ function CaseStudy({ project }) {
           })}
         </div>
       </div>
+      ) : null}
     </div>
   );
 }

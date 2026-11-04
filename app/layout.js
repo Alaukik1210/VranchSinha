@@ -1,4 +1,4 @@
-import { Funnel_Display, Outfit } from "next/font/google";
+import { Funnel_Display, Geist_Mono, Outfit } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import LiquidGlassFilter from "@/components/LiquidGlassFilter";
@@ -10,6 +10,13 @@ const funnelDisplay = Funnel_Display({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+// Small metadata labels only (roles, indexes, captions).
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+});
+
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
@@ -18,7 +25,7 @@ const outfit = Outfit({
 
 
 export const metadata = {
-  title: "Vranch Sinha — Portfolio",
+  title: "Vranch Sinha | Brand identity and interface designer",
   description:
     "Vranch Sinha — designer crafting digital experiences and brand identities.",
   icons: {
@@ -27,7 +34,7 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: "#0E0E0E",
+  themeColor: "#0B0B0C",
   width: "device-width",
   initialScale: 1,
 };
@@ -39,6 +46,7 @@ export default function RootLayout({ children }) {
         className={`
           ${funnelDisplay.variable}
           ${outfit.variable}
+          ${geistMono.variable}
           antialiased
         `}
       >
