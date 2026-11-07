@@ -1,31 +1,22 @@
-import Intro from "@/components/site/Intro";
-import Nav from "@/components/site/Nav";
-import Hero from "@/components/site/Hero";
-import Statement from "@/components/site/Statement";
-import Work from "@/components/site/Work";
-import Capabilities from "@/components/site/Capabilities";
-import Identity from "@/components/site/Identity";
-import Side from "@/components/site/Side";
-import About from "@/components/site/About";
-import Contact from "@/components/site/Contact";
+import AboutSection from "@/components/site/AboutSection";
+import EyeHero from "@/components/site/EyeHero";
+import GlassNav from "@/components/site/GlassNav";
+import Leadership from "@/components/site/Leadership";
+import References from "@/components/site/References";
+import SelectedWork from "@/components/site/SelectedWork";
+import SignOff from "@/components/site/SignOff";
 
+// v3 is being built section by section.
 export default function Home() {
   return (
-    <main className="site">
-      <Intro />
-      <Nav />
-      {/* Everything above the footer sits on its own layer, so it can lift
-          off the fixed contact screen underneath. */}
-      <div className="relative z-10 bg-[var(--ink)]">
-        <Hero />
-        <Statement />
-        <Work />
-        <Capabilities />
-        <Identity />
-        <Side />
-        <About />
-      </div>
-      <Contact />
+    <main className="site-v3">
+      <GlassNav />
+      <EyeHero />
+      <SelectedWork />
+      <AboutSection />
+      <Leadership />
+      <References />
+      <SignOff />
     </main>
   );
 }

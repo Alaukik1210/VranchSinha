@@ -28,6 +28,7 @@ export default function SmoothScroll({ children }) {
 
     // Expose for in-app programmatic scrolling (e.g. nav, buttons).
     window.lenis = lenis;
+    if (document.documentElement.classList.contains("is-intro")) lenis.stop();
 
     let frame;
     const raf = (time) => {

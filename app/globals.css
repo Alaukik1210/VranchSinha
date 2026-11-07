@@ -5,8 +5,8 @@
 
 :root {
 
-  --font-primary: var(--font-outfit);
-  --font-heading: var(--font-funnel-display);
+  --font-primary: var(--font-manrope);
+  --font-heading: var(--font-unbounded);
   --radius: 0.625rem;
   /* Dark-only site: base tokens default to the portfolio's dark surface */
   --background: #0e0e0e;
@@ -98,11 +98,11 @@ body {
 }
 
 .font-outfit {
-  font-family: var(--font-outfit);
+  font-family: var(--font-manrope);
 }
 
 .font-funnel {
-  font-family: var(--font-funnel-display);
+  font-family: var(--font-unbounded);
 }
 
 /* ---- Hero 3D lanyard canvas touch behaviour ----
@@ -542,4 +542,1516 @@ html {
   .footer-head h2 { font-size: 4.2vw; }
   .footer-cols { padding-top: 14px; padding-bottom: 14px; row-gap: 12px; }
   .footer-cols a, .footer-cols button { line-height: 1.35; }
+}
+
+/* ======================================================================
+   v3 · Eye hero (loader + hero). Ground and ink come from the eye film.
+   ====================================================================== */
+:root {
+  --ground: #fffefc;
+  --eye-ink: #0b0b0b;
+  --eye-mute: rgba(10, 10, 10, 0.5);
+}
+.site-v3 {
+  /* Type scale. Every v3 text style uses one of these four sizes. */
+  --fs-caption: clamp(11px, calc(var(--u) * 12), 18px); /* mono labels */
+  --fs-ui: clamp(14px, calc(var(--u) * 16), 24px); /* nav, lists */
+  --fs-body: clamp(16px, min(calc(var(--u) * 19), 2.2svh), 28px); /* running text */
+  --fs-display: clamp(30px, min(9vw, calc(var(--u) * 58), 6.2svh), 92px); /* headings */
+  background: var(--ground);
+  color: var(--eye-ink);
+  font-family: var(--font-manrope), system-ui, sans-serif;
+}
+.font-display {
+  font-family: var(--font-unbounded), system-ui, sans-serif;
+}
+.site-v3 ::selection {
+  background: #2f6bff;
+  color: var(--ground);
+}
+.eye-hero {
+  background: var(--ground);
+  color: var(--eye-ink);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+.eye-chrome {
+  opacity: 0;
+  transform: translateY(calc(var(--u) * 8));
+  transition: opacity 700ms var(--ease-out), transform 900ms var(--ease-out);
+}
+.eye-chrome.is-on {
+  opacity: 1;
+  transform: none;
+}
+.eye-chrome:not(.is-on) {
+  pointer-events: none;
+}
+.eye-skip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--u) * 32);
+  translate: -50% 0;
+  padding: 10px 14px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: var(--fs-caption);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  mix-blend-mode: difference;
+}
+.eye-skip:hover {
+  color: var(--eye-ink);
+}
+.eye-link {
+  transition: opacity 200ms ease;
+}
+.eye-link:hover {
+  opacity: 0.55;
+}
+.eye-pill {
+  display: inline-flex;
+  align-items: center;
+  height: calc(var(--u) * 38);
+  padding: 0 calc(var(--u) * 18);
+  border-radius: 999px;
+  background: var(--eye-ink);
+  color: var(--ground);
+  transition: opacity 200ms ease;
+}
+.eye-pill:hover {
+  opacity: 0.82;
+}
+
+/* The ring draws on as the camera settles, then turns slowly. */
+.eye-ring {
+  opacity: 0;
+  transform: scale(0.94) rotate(-24deg);
+  transition: opacity 900ms var(--ease-out), transform 1600ms var(--ease-out);
+}
+.eye-ring.is-on {
+  opacity: 1;
+  transform: none;
+}
+.eye-ring-spin {
+  animation: eye-spin 48s linear infinite;
+}
+.eye-ring-text {
+  fill: var(--eye-ink);
+  font-family: var(--font-unbounded), system-ui, sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+@keyframes eye-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eye-ring-spin {
+    animation: none;
+  }
+}
+
+body:has(.site-v3) {
+  background-color: var(--ground);
+}
+
+/* ======================================================================
+   v3 · Liquid Glass nav capsule (see GlassNav.jsx)
+   ====================================================================== */
+.glass-nav-wrap {
+  opacity: 0;
+  transform: translateY(calc(var(--u) * -10));
+  transition: opacity 700ms var(--ease-out), transform 900ms var(--ease-out);
+}
+/* No scrolling during the intro, by any means. The gutter stops the page shifting
+   sideways when a classic scrollbar comes back. */
+html {
+  scrollbar-gutter: stable;
+  background: #fffefc;
+}
+html.is-intro,
+html.is-intro body {
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+html[data-intro="done"] .glass-nav-wrap {
+  opacity: 1;
+  transform: none;
+}
+.glass-pill {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: clamp(calc(var(--u) * 28), 10vw, calc(var(--u) * 64));
+  height: calc(var(--u) * 56);
+  padding: 0 calc(var(--u) * 6) 0 calc(var(--u) * 18);
+  border-radius: 999px;
+  color: var(--eye-ink);
+  font-size: var(--fs-ui);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  /* Safari / Firefox: clear glass with blur. Chromium swaps in refraction. */
+  background: rgba(255, 255, 255, 0.16);
+  -webkit-backdrop-filter: blur(6px) saturate(1.8);
+  backdrop-filter: blur(6px) saturate(1.8);
+  box-shadow:
+    /* specular: bright rim toward the light (top left), fainter opposite */
+    inset 1.5px 1.5px 1px -0.5px rgba(255, 255, 255, 0.95),
+    inset -1px -1px 1px -0.5px rgba(255, 255, 255, 0.6),
+    /* thickness: a soft inner glow and a hint of shade at the lower edge */
+    inset 0 0 calc(var(--u) * 10) rgba(255, 255, 255, 0.35),
+    inset 0 calc(var(--u) * -6) calc(var(--u) * 10) calc(var(--u) * -8) rgba(0, 0, 0, 0.1),
+    /* contact shadow */
+    0 calc(var(--u) * 6) calc(var(--u) * 22) rgba(10, 10, 10, 0.1),
+    0 1px 2px rgba(10, 10, 10, 0.08);
+}
+.glass-pill.is-refract {
+  backdrop-filter: var(--lg) saturate(1.3) brightness(1.04);
+}
+/* Hairline edge: brighter on the lit side, as light wraps a glass border. */
+.glass-pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.15) 40%, rgba(255, 255, 255, 0.1) 60%, rgba(255, 255, 255, 0.7));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+}
+.glass-name {
+  transition: color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 10);
+  white-space: nowrap;
+}
+.glass-mark {
+  width: calc(var(--u) * 26);
+  height: calc(var(--u) * 26);
+  flex: none;
+}
+.glass-cta {
+  display: inline-flex;
+  align-items: center;
+  height: calc(var(--u) * 44);
+  padding: 0 calc(var(--u) * 20);
+  border-radius: 999px;
+  background: var(--eye-ink);
+  color: var(--ground);
+  white-space: nowrap;
+  transition: transform 300ms var(--ease-out), opacity 200ms ease;
+}
+.glass-cta:hover {
+  opacity: 0.86;
+}
+.glass-cta:active {
+  transform: scale(0.96);
+}
+
+/* ---- v3 About ---- */
+.about-label {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: var(--fs-caption);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.about-title {
+  font-family: var(--font-unbounded), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: var(--fs-display);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+}
+/* Sized to its column, so the three lines stay three at every width. */
+@media (max-width: 767px) {
+  .about-title {
+    font-size: min(8.1vw, 44px);
+  }
+}
+@media (min-width: 768px) {
+  .about-title {
+    font-size: min(var(--fs-display), 4.1vw);
+  }
+}
+.about-body {
+  font-size: var(--fs-body);
+  line-height: 1.5;
+}
+.about-does li {
+  padding: calc(var(--u) * 9) 0;
+  border-top: 1px solid rgba(10, 10, 10, 0.12);
+  font-size: var(--fs-ui);
+}
+/* Selected work. The stage sticks while the page scrolls through --work-travel. */
+.work {
+  --work-travel: 240svh;
+  position: relative;
+  height: calc(100svh + var(--work-travel));
+  background: var(--ground);
+}
+.work-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+.work-host {
+  position: absolute;
+  inset: 0;
+}
+.work-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.work-canvas[data-dragging] {
+  cursor: grabbing;
+}
+.work-chrome {
+  position: absolute;
+  inset: calc(var(--u) * 92) 0 auto;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.work-chrome {
+  align-items: baseline;
+}
+.work-title {
+  font-size: var(--fs-body);
+  font-weight: 500;
+}
+/* The card's name, under it. Each one rises in as its card arrives. */
+.work-tag {
+  position: absolute;
+  inset: auto 0 calc(var(--u) * 44);
+  text-align: center;
+  pointer-events: none;
+  animation: work-tag-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+/* Above the name, so the names all sit on one line from card to card. */
+.work-tag small {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.82em;
+  color: var(--eye-mute);
+}
+@keyframes work-tag-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .work-tag {
+    animation: none;
+  }
+}
+/* Real links for search, screen readers and keyboards. They sit out of sight
+   until focused, and become the section if WebGL isn't available. */
+.work-list {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.work.is-plain {
+  height: auto;
+}
+.work.is-plain .work-stage {
+  position: static;
+  height: auto;
+  padding-block: calc(var(--u) * 112);
+}
+.work.is-plain .work-host {
+  display: none;
+}
+.work.is-plain .work-chrome {
+  position: static;
+}
+.work.is-plain .work-list {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip-path: none;
+  white-space: normal;
+  margin-top: calc(var(--u) * 28);
+  font-size: var(--fs-ui);
+}
+.work.is-plain .work-list li {
+  padding: calc(var(--u) * 14) 0;
+  border-top: 1px solid rgba(10, 10, 10, 0.12);
+}
+/* The cursor. Difference blend: white reads black on the ground and inverts
+   what's under it. */
+.has-dot,
+.has-dot * {
+  cursor: none !important;
+}
+.dot-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483647;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  opacity: 0;
+  will-change: transform;
+}
+.dot-cursor.is-on {
+  opacity: 1;
+}
+/* Over the big eye the dot is what you aim with, so it stays one plain colour. */
+.dot-cursor.is-vision {
+  mix-blend-mode: normal;
+}
+.dot-shape {
+  position: absolute;
+  left: -40px;
+  top: -24px;
+  width: 80px;
+  height: 48px;
+  background: #fff;
+  clip-path: var(--dot);
+  transition: clip-path 0.3s cubic-bezier(0.33, 0, 0.2, 1);
+}
+.is-eye .dot-shape {
+  clip-path: var(--eye);
+}
+.is-hand .dot-shape,
+.is-pill .dot-shape {
+  clip-path: var(--gone);
+}
+/* The pill grows out of the dot; solid ink, so the text reads on anything. */
+.dot-pill {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483647;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+.dot-pill span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 11px 18px;
+  border-radius: 999px;
+  background: #0b0b0b;
+  color: #fffefc;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  translate: -50% -50%;
+  opacity: 0;
+  clip-path: inset(calc(50% - 6px) calc(50% - 6px) round 999px);
+  transition:
+    clip-path 0.3s cubic-bezier(0.33, 0, 0.2, 1),
+    opacity 0.12s linear 0.18s;
+}
+.dot-pill.is-pill span {
+  opacity: 1;
+  clip-path: inset(0 round 999px);
+  transition:
+    clip-path 0.3s cubic-bezier(0.33, 0, 0.2, 1),
+    opacity 0.08s linear;
+}
+.dot-pill.on-eye span {
+  color: var(--eye-ink);
+  background: var(--ground);
+}
+.dot-hand {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483647;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+.dot-hand span {
+  position: absolute;
+  left: -12px;
+  top: -12px;
+  width: 24px;
+  height: 24px;
+  background: url("/cursor/glove-open.png") center / contain no-repeat;
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    transform 0.26s cubic-bezier(0.33, 0, 0.2, 1),
+    opacity 0.14s linear;
+}
+.dot-hand.is-on.is-hand span {
+  opacity: 1;
+  transform: scale(1);
+}
+.is-grip span {
+  background-image: url("/cursor/glove-grip.png");
+}
+/* Mockup: a site on a Mac on black, lit from behind in the project's colour, with an
+   italic title above. Everything on the device is in cqw, a share of its own width,
+   and each inner radius is its outer radius less the bezel, so the corners run true. */
+.mock {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 58% at 50% 62%, color-mix(in srgb, var(--tone) 62%, transparent), transparent 72%), #0b0b0b;
+}
+.mock.is-wide {
+  aspect-ratio: 16 / 10;
+}
+.mock-title {
+  flex: none;
+  margin-top: 6%;
+  padding-inline: 6%;
+  text-align: center;
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(22px, calc(var(--fs-body) * 1.5), 34px);
+  line-height: 1.1;
+  color: #fffefc;
+}
+.mock-device {
+  container-type: inline-size;
+  display: block;
+  width: 76%;
+  margin-block: auto;
+}
+.mock-device.is-display {
+  width: 66%;
+}
+.mock.is-wide .mock-device {
+  width: 62%;
+}
+.mock.is-wide .mock-device.is-display {
+  width: 50%;
+}
+.mock-lid {
+  position: relative;
+  display: block;
+  padding: 1.3cqw;
+  border-radius: 2.6cqw;
+  background: #08080a;
+  box-shadow:
+    0 0 0 0.22cqw #4a4b50,
+    inset 0 0 0 0.12cqw rgba(255, 254, 252, 0.08),
+    0 3cqw 8cqw -2cqw rgba(0, 0, 0, 0.7);
+}
+.is-laptop .mock-lid {
+  padding-bottom: 2cqw;
+  border-radius: 2.6cqw 2.6cqw 0.6cqw 0.6cqw;
+}
+/* The phone. Its screenshots carry their own status bar and island. */
+.mock.is-phone {
+  aspect-ratio: 3 / 4;
+}
+.mock .mock-device.is-phone {
+  width: 45%;
+}
+.is-phone .mock-lid {
+  padding: 2.6cqw;
+  border-radius: 14cqw;
+  box-shadow:
+    0 0 0 0.6cqw #4a4b50,
+    inset 0 0 0 0.3cqw rgba(255, 254, 252, 0.08),
+    0 4cqw 10cqw -2cqw rgba(0, 0, 0, 0.7);
+}
+.is-phone .mock-screen {
+  border-radius: 11.4cqw;
+}
+.mock-screen {
+  display: block;
+  overflow: hidden;
+  border-radius: 1.3cqw;
+  background: #fffefc;
+}
+.is-laptop .mock-screen {
+  border-radius: 1.3cqw 1.3cqw 0.3cqw 0.3cqw;
+}
+.story-media .story-panel .mock-screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto;
+  border-radius: 0;
+  object-fit: fill;
+}
+.mock-notch {
+  position: absolute;
+  top: 1.2cqw;
+  left: 50%;
+  width: 11cqw;
+  height: 1.7cqw;
+  margin-left: -5.5cqw;
+  border-radius: 0 0 0.8cqw 0.8cqw;
+  background: #08080a;
+}
+.mock-notch::after {
+  content: "";
+  position: absolute;
+  top: 0.45cqw;
+  left: 50%;
+  width: 0.62cqw;
+  height: 0.62cqw;
+  margin-left: -0.31cqw;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #2c3a52, #0a0d14 70%);
+}
+/* The MacBook's base: wider than the lid, with the thumb scoop in the middle. */
+.mock-deck {
+  position: relative;
+  display: block;
+  height: 1.9cqw;
+  margin-inline: -6.5cqw;
+  border-radius: 0.2cqw 0.2cqw 3cqw 3cqw / 0.2cqw 0.2cqw 1.7cqw 1.7cqw;
+  background: linear-gradient(#f0f0f2, #bfc0c4 34%, #85868b 72%, #55565a);
+  box-shadow: 0 1.2cqw 2.4cqw -0.4cqw rgba(0, 0, 0, 0.7);
+}
+.mock-deck::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 15cqw;
+  height: 0.75cqw;
+  margin-left: -7.5cqw;
+  border-radius: 0 0 1cqw 1cqw;
+  background: linear-gradient(#75767a, #a7a8ac);
+}
+/* The display's stand: a neck and a flat foot, in the same aluminium. */
+.mock-neck {
+  display: block;
+  width: 22cqw;
+  height: 9cqw;
+  margin-inline: auto;
+  background: linear-gradient(90deg, #6e6f73, #c9cacd 14%, #dcdde0 50%, #c9cacd 86%, #6e6f73);
+  box-shadow: inset 0 2.4cqw 2cqw -1.6cqw rgba(0, 0, 0, 0.65);
+}
+.mock-foot {
+  display: block;
+  width: 32cqw;
+  height: 1.1cqw;
+  margin-inline: auto;
+  border-radius: 0.3cqw 0.3cqw 0.6cqw 0.6cqw;
+  background: linear-gradient(#e6e7e9, #8c8d91);
+  box-shadow: 0 1cqw 2cqw -0.3cqw rgba(0, 0, 0, 0.7);
+}
+/* Eye candy and the roles section. */
+.shelf {
+  padding-block: calc(var(--u) * 112);
+  overflow-x: clip;
+}
+.shelf-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+}
+/* The wall: 100 units wide, every face a square turned into the plane by a matrix. */
+.iso {
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 100 / 101;
+  max-width: min(600px, 84svh);
+  margin: calc(var(--u) * 28) auto 0;
+}
+.iso-tile {
+  position: absolute;
+  display: block;
+  width: 28.87cqw;
+  height: 28.87cqw;
+  overflow: hidden;
+  transform-origin: 0 0;
+  background: #e6e4dd;
+}
+.iso-tile img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+/* Direction: a street sign seen from below, in real 3D. The stage leans back and
+   a little to the side; each panel is turned to its own angle on the pole, and a
+   tap spins it about the pole to show its back. */
+.signpost {
+  width: min(660px, 94%);
+  margin: calc(var(--u) * 36) auto 0;
+  perspective: 1500px;
+  perspective-origin: 50% 105%;
+}
+/* Panels turn to either side of the stage's plane, and anything in that plane
+   would catch taps meant for the far half. Only the signs take the pointer. */
+.sign-stage,
+.sign-stage * {
+  pointer-events: none;
+}
+.sign-stage .sign {
+  pointer-events: auto;
+}
+.sign-stage {
+  --h: clamp(104px, calc(var(--u) * 128), 146px);
+  --gap: calc(var(--u) * 76);
+  --pad: calc(var(--u) * 56) 0 calc(var(--u) * 150);
+  position: relative;
+  display: grid;
+  gap: var(--gap);
+  padding: var(--pad);
+  transform: rotateX(9deg);
+  transform-style: preserve-3d;
+}
+/* Pushed back 100px, with the scale and origin measured so its slots line up with
+   the panels to within half a pixel. */
+.sign-rear {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: start;
+  gap: var(--gap);
+  padding: var(--pad);
+  transform: translateZ(-100px) scale(1.088);
+  transform-origin: 50% 135%;
+}
+.sign-slot {
+  position: relative;
+  height: var(--h);
+}
+.sign-pole {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 9px);
+  width: 18px;
+  border-radius: 9px 9px 0 0;
+  background: linear-gradient(90deg, #6f7176, #d9dbdf 22%, #fffefc 40%, #b9bbc0 62%, #808287 84%, #5d5f64);
+  -webkit-mask-image: linear-gradient(#000 80%, transparent);
+  mask-image: linear-gradient(#000 80%, transparent);
+}
+.sign-row {
+  position: relative;
+  transform-style: preserve-3d;
+}
+.sign-mount {
+  transform-style: preserve-3d;
+}
+.sign {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: var(--h);
+  transform-style: preserve-3d;
+  transition: transform 0.9s cubic-bezier(0.45, 0, 0.15, 1);
+}
+/* Apple glass, the same recipe as the nav pill: a specular rim toward the light,
+   a fainter one opposite, an inner glow and shade for thickness, over a saturated
+   gradient you can still see the pole through. */
+.sign-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, calc(var(--u) * 20), 24px);
+  padding: 0 clamp(16px, calc(var(--u) * 30), 36px);
+  overflow: hidden;
+  border-radius: 22px;
+  text-align: left;
+  color: #fffefc;
+  font-size: var(--fs-ui);
+  line-height: 1.4;
+  /* Like the project cards: a dark heart, the colour pooling at the edges. Every
+     stop keeps some alpha, so the pole still shows through. */
+  background:
+    radial-gradient(120% 150% at 10% -30%, rgba(255, 254, 252, 0.3), transparent 42%),
+    radial-gradient(
+      62% 86% at 50% 50%,
+      rgba(11, 11, 11, 0.84) 30%,
+      color-mix(in srgb, var(--g3) 76%, rgba(11, 11, 11, 0.8)) 60%,
+      color-mix(in srgb, var(--g2) 90%, transparent) 82%,
+      color-mix(in srgb, var(--g1) 94%, transparent) 100%
+    );
+  box-shadow:
+    inset 1.5px 1.5px 1px -0.5px rgba(255, 254, 252, 0.95),
+    inset -1px -1px 1px -0.5px rgba(255, 254, 252, 0.55),
+    inset 0 0 18px rgba(255, 254, 252, 0.24),
+    inset 0 -10px 16px -10px rgba(11, 11, 11, 0.3),
+    0 24px 40px -14px color-mix(in srgb, var(--g2) 60%, transparent),
+    0 2px 4px rgba(11, 11, 11, 0.12);
+  -webkit-backdrop-filter: blur(8px) saturate(1.8);
+  backdrop-filter: blur(8px) saturate(1.8);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.is-left .sign-face {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.sign-back {
+  transform: rotateY(180deg);
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.is-left .sign-back {
+  flex-direction: row;
+  text-align: left;
+}
+.sign-logo {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: clamp(52px, calc(var(--u) * 76), 84px);
+  aspect-ratio: 1;
+  padding: 9px;
+  border-radius: 14px;
+  background: rgba(11, 11, 11, 0.62);
+  box-shadow: inset 0 1px 0 rgba(255, 254, 252, 0.3);
+}
+.sign-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.sign-text {
+  flex: 1;
+  min-width: 0;
+}
+.sign-role {
+  display: block;
+  font-size: var(--fs-body);
+  font-weight: 600;
+}
+.sign-org {
+  display: block;
+  color: rgba(255, 254, 252, 0.86);
+}
+.sign-arrow {
+  flex: none;
+  width: clamp(38px, calc(var(--u) * 60), 66px);
+  fill: none;
+  stroke: #fffefc;
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.is-left .sign-face:not(.sign-back) .sign-arrow,
+.sign-row:not(.is-left) .sign-back .sign-arrow {
+  transform: scaleX(-1);
+}
+/* Brackets on the pole's centre line; each panel sits between its pair. */
+/* Narrower screens: the same sign, tightened so the text keeps its own space, with
+   room above for the hint. */
+@media (max-width: 1000px) {
+  .signpost {
+    width: min(660px, 76%);
+    margin-top: calc(var(--u) * 36 + 40px);
+  }
+}
+@media (max-width: 640px) {
+  .signpost {
+    width: 92%;
+  }
+  .sign-stage {
+    --h: 92px;
+  }
+  .sign-face {
+    gap: 10px;
+    padding: 0 14px;
+    border-radius: 18px;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+  .sign-logo {
+    width: 44px;
+    padding: 6px;
+    border-radius: 11px;
+  }
+  .sign-arrow {
+    width: 26px;
+    stroke-width: 4.5;
+  }
+  .sign-role {
+    font-size: 13.5px;
+  }
+  .sign-org {
+    font-size: 11.5px;
+  }
+}
+.sign-collar {
+  position: absolute;
+  left: calc(50% - 15px);
+  width: 30px;
+  height: 14px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #5d5f64, #c9cbcf 24%, #fffefc 42%, #a9abb0 66%, #55575c);
+  box-shadow: 0 1px 3px rgba(11, 11, 11, 0.3);
+}
+.sign-collar.is-top {
+  bottom: 100%;
+}
+.sign-collar.is-bottom {
+  top: 100%;
+}
+/* How-to notes: tiny, handwritten, gone once tried. */
+.hint {
+  position: absolute;
+  z-index: 40;
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  font-family: var(--font-caveat), cursive;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--eye-ink);
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.hint.is-done {
+  opacity: 0;
+}
+.hint svg {
+  width: 34px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Anchored hints: placed by Hint.jsx, facing what they point at. The arrow is drawn
+   heading right and a little up, and each side turns it onto its target. */
+.hint[data-side] {
+  align-items: center;
+  gap: 6px;
+}
+.hint[data-side="left"] svg {
+  rotate: 18deg;
+}
+.hint[data-side="right"] {
+  flex-direction: row-reverse;
+}
+.hint[data-side="right"] svg {
+  scale: -1 1;
+  rotate: -18deg;
+}
+.hint[data-side="top"] {
+  flex-direction: column;
+}
+.hint[data-side="top"] svg {
+  rotate: 108deg;
+}
+/* Room above the polaroid for its hint, where it stacks under the text. */
+@media (max-width: 767px) {
+  .about-frame {
+    margin-top: 56px;
+  }
+}
+.work-slot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--card-w, 0);
+  height: var(--card-h, 0);
+  translate: -50% -50%;
+  pointer-events: none;
+}
+/* The big eye, drawn by lib/visionLens. Under the nav and over everything else. */
+.vision-eye {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  visibility: hidden;
+}
+/* The bill: the site's last screen. Its resting state here is the end of the film,
+   zoomed in on the foot of the receipt; the film starts from further out. */
+.bill {
+  --bill: min(92vw, 1100px, 88svh);
+  position: relative;
+  height: 100svh;
+  font-size: calc(var(--bill) / 30);
+  background: var(--eye-ink);
+}
+.bill.is-film {
+  height: calc(100svh + var(--pull, 0px));
+}
+.bill-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+.bill-camera {
+  position: absolute;
+  inset: 0;
+}
+.bill-paper {
+  --m: max(6svh, 1.6em);
+  position: absolute;
+  left: 50%;
+  bottom: var(--m);
+  width: var(--bill);
+  margin-left: calc(var(--bill) / -2);
+  padding: 3em 2em 1.4em;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  line-height: 1.45;
+  color: var(--eye-ink);
+  background:
+    linear-gradient(90deg, rgba(11, 11, 11, 0.05), transparent 4%, transparent 96%, rgba(11, 11, 11, 0.05)),
+    var(--ground);
+}
+/* The paper's torn foot. */
+.bill-paper::after {
+  content: "";
+  position: absolute;
+  top: calc(100% - 1px);
+  left: 0;
+  right: 0;
+  height: 0.3em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 10' preserveAspectRatio='none'%3E%3Cpath d='M0 0H20L10 10Z' fill='%23fffefc'/%3E%3C/svg%3E") 0 0 / 0.6em 100% round no-repeat;
+}
+.bill-head {
+  display: grid;
+  justify-items: center;
+  gap: 0.5em;
+  text-align: center;
+}
+.bill-head .bill-mark {
+  width: 3.2em;
+  height: 3.2em;
+}
+.bill-name {
+  font-family: var(--font-unbounded), system-ui, sans-serif;
+  font-size: 1.6em;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.bill-rule {
+  margin-block: 1.1em;
+  border-top: 0.09em dashed var(--eye-ink);
+}
+.bill-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5em;
+}
+.bill-row > :last-child {
+  flex: none;
+  text-align: right;
+}
+.bill-item {
+  margin-top: 1.7em;
+}
+.bill-still {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 0.7em;
+}
+.bill-item h3 {
+  font: inherit;
+  font-weight: 600;
+}
+.bill-sub {
+  margin-top: 0.3em;
+  font-size: 0.82em;
+  color: rgba(11, 11, 11, 0.66);
+}
+.bill-sub span:first-child {
+  min-width: 0;
+}
+.bill-closing {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  padding-block: 0.5em;
+}
+.bill-closer {
+  padding: 0.5em 0.8em;
+  font-size: 1.22em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+}
+/* Beside the bill, level with the middle of the screen, where there's room for it and a
+   pointer to hover with. Otherwise on the paper, under the line you tap. */
+.bill-tag.is-beside {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + var(--bill) / 2 + 17px);
+  z-index: 2;
+}
+.hint-beside {
+  position: static;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 6px;
+  translate: 0 calc(-50% - 6px);
+  font-size: 18px;
+  color: var(--ground);
+}
+.hint-beside svg {
+  scale: -1 1;
+  rotate: -18deg;
+}
+.bill-tag.is-on-paper {
+  position: absolute;
+  right: 3.2em;
+  top: calc(100% - 0.75em);
+  z-index: 2;
+  display: none;
+}
+.hint-closer {
+  position: static;
+  align-items: flex-start;
+  font-size: max(1em, 17px);
+}
+.hint-closer svg {
+  order: -1;
+  margin-top: -0.35em;
+  rotate: 196deg;
+}
+@media (hover: none), (max-width: 899px) {
+  .bill-tag.is-beside {
+    display: none;
+  }
+  .bill-tag.is-on-paper {
+    display: block;
+  }
+}
+.bill-end {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: 0.3em;
+  text-align: center;
+}
+.bill-end .bill-name {
+  margin-bottom: 0.3em;
+  font-size: 1.15em;
+}
+/* The links hang off the ends of the email, so the two lines share their edges. */
+.bill-contact {
+  display: grid;
+  gap: 0.3em;
+  width: fit-content;
+}
+.bill-links {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.86em;
+}
+.bill-end a {
+  text-decoration: underline;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.2em;
+}
+.bill-code {
+  width: 74%;
+  height: 2.6em;
+  margin-top: 0.8em;
+}
+.bill-foot {
+  font-size: 0.72em;
+  color: rgba(11, 11, 11, 0.66);
+}
+/* The printer. It only appears in the film, and sits in front of the paper so the
+   paper comes up from behind its top edge. */
+.bill-printer {
+  position: absolute;
+  left: 50%;
+  bottom: -2em;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: calc(var(--bill) * 1.14);
+  height: calc(var(--bill) * 0.2 + 2em);
+  margin-left: calc(var(--bill) * -0.57);
+  padding: 0 2em 2em;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.8em;
+  color: rgba(255, 254, 252, 0.5);
+  border-radius: 1.1em 1.1em 0 0;
+  background: linear-gradient(#232323, #131313 46%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 254, 252, 0.16),
+    inset 0 0.5em 0.7em -0.5em rgba(255, 254, 252, 0.1);
+  visibility: hidden;
+}
+/* The shadow the printer's lip throws on the paper. */
+.bill-printer::before {
+  content: "";
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  bottom: 100%;
+  height: 3.6em;
+  background: linear-gradient(transparent, rgba(11, 11, 11, 0.34));
+  pointer-events: none;
+}
+/* The cutter, crossing the slot along the printer's top edge. */
+.bill-blade {
+  position: absolute;
+  top: 0;
+  left: 6%;
+  right: 6%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--ground) 12%, var(--ground) 88%, transparent);
+  box-shadow: 0 0 10px rgba(255, 254, 252, 0.5);
+  opacity: 0;
+  transform-origin: 0 50%;
+}
+.bill-led {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: var(--ground);
+}
+/* The top of the paper falls away into the dark, on an eased ramp so it has no edge. */
+.bill-shade {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 36%;
+  background: linear-gradient(
+    rgb(11 11 11) 12%,
+    rgb(11 11 11 / 0.92) 24%,
+    rgb(11 11 11 / 0.72) 38%,
+    rgb(11 11 11 / 0.46) 53%,
+    rgb(11 11 11 / 0.22) 68%,
+    rgb(11 11 11 / 0.07) 84%,
+    transparent
+  );
+  pointer-events: none;
+}
+.bill-again {
+  position: absolute;
+  top: calc(var(--u) * 30);
+  right: 20px;
+  z-index: 2;
+  padding: 8px 4px;
+  color: var(--ground);
+  transition: opacity 0.4s ease;
+}
+.bill.is-film .bill-paper {
+  pointer-events: none;
+}
+.bill.is-film .bill-again {
+  opacity: 0;
+  pointer-events: none;
+}
+.bill.is-still .bill-again {
+  display: none;
+}
+@media (max-width: 640px) {
+  .bill-again {
+    top: calc(var(--u) * 84);
+    right: 26px;
+  }
+}
+/* The nudge, beside the paper at mid-height, for anyone who stops pulling. */
+.bill-nudge {
+  position: absolute;
+  left: calc(50% + var(--bill) * 0.37);
+  top: 50%;
+  translate: 8px -50%;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    translate 0.3s ease;
+}
+.bill-nudge.is-on {
+  translate: 0 -50%;
+  opacity: 1;
+  transition:
+    opacity 0.45s ease,
+    translate 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hint-nudge {
+  position: static;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 6px;
+  font-size: 18px;
+  line-height: 1.05;
+  color: var(--ground);
+}
+.hint-nudge svg {
+  rotate: 14deg;
+}
+/* No room beside the paper for both, so the arrow goes over the words. */
+@media (max-width: 900px) {
+  .hint-nudge {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 2px;
+  }
+}
+@media (max-width: 640px) {
+  .bill-nudge {
+    left: calc(50% + var(--bill) * 0.345);
+  }
+  .hint-nudge {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 2px;
+    font-size: 15px;
+  }
+}
+@media (max-width: 360px) {
+  .bill-nudge {
+    left: calc(50% + var(--bill) * 0.335);
+  }
+  .hint-nudge {
+    font-size: 13px;
+  }
+  .hint-nudge svg {
+    width: 26px;
+  }
+}
+/* The nav's name is set for the light ground. */
+[data-on-bill] .glass-name {
+  color: var(--ground);
+}
+.bill-anchor {
+  position: absolute;
+  bottom: 0;
+  height: 100svh;
+  pointer-events: none;
+}
+/* Case study: one calm reading column. Headings step up in ink, not in scale. */
+.story {
+  width: min(720px, 100%);
+  margin-inline: auto;
+  padding: calc(var(--u) * 92) 20px calc(var(--u) * 56);
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  color: rgba(10, 10, 10, 0.68);
+}
+.story-fade {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  height: calc(var(--u) * 56);
+  background: linear-gradient(var(--ground), transparent);
+  pointer-events: none;
+}
+.story-back {
+  position: fixed;
+  z-index: 60;
+  top: calc(var(--u) * 28);
+  left: calc(var(--u) * 40);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(10, 10, 10, 0.06);
+  color: var(--eye-ink);
+}
+.story-tag {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: var(--fs-caption);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--eye-mute);
+}
+.story h1,
+.story h2,
+.story h3 {
+  color: var(--eye-ink);
+  font-weight: 600;
+  line-height: 1.35;
+}
+.story h1,
+.story h2 {
+  font-size: calc(var(--fs-body) * 1.12);
+}
+.story h3 {
+  font-size: var(--fs-body);
+}
+.story p + p {
+  margin-top: 0.8em;
+}
+.story-block {
+  margin-top: calc(var(--u) * 72);
+}
+.story-media {
+  display: grid;
+  gap: 14px;
+  margin-block: calc(var(--u) * 48);
+}
+.story-media + .story-media {
+  margin-top: calc(14px - var(--u) * 48);
+}
+.story-panel {
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(10, 10, 10, 0.05), 0 14px 34px rgba(10, 10, 10, 0.06);
+}
+.story-panel img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.is-pair .story-panel img {
+  aspect-ratio: var(--pair, 4 / 3);
+  object-fit: cover;
+}
+.story-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: calc(var(--u) * 26) 24px;
+  margin-top: calc(var(--u) * 36);
+}
+.story-stats b {
+  display: block;
+  font-size: calc(var(--fs-body) * 1.35);
+  font-weight: 600;
+  color: var(--eye-ink);
+}
+.story-others a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  padding: calc(var(--u) * 12) 0;
+  color: var(--eye-ink);
+}
+.story-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-top: calc(var(--u) * 96);
+}
+@media (min-width: 640px) {
+  .story-media.is-pair {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+/* The circle a card opens through. */
+.lens {
+  --r: 0px;
+  --soft: 120px;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: #0b0b0b;
+  box-shadow: inset 0 0 16vmin 1vmin var(--tone);
+  -webkit-mask-image: radial-gradient(circle at center, #000 max(0px, calc(var(--r) - var(--soft))), transparent var(--r));
+  mask-image: radial-gradient(circle at center, #000 max(0px, calc(var(--r) - var(--soft))), transparent var(--r));
+}
+/* Off the clock: a symbol beside each item, centred on its first line the
+   way SF Symbols sit with a label. */
+.about-does li {
+  line-height: 1.45;
+}
+.about-also {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.7em;
+  align-items: start;
+}
+.about-also-icon {
+  display: block;
+  width: 1.15em;
+  height: 1.15em;
+  margin-top: 0.15em; /* (1.45 line − 1.15 icon) / 2 */
+}
+.peel-sticker {
+  position: relative;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  will-change: transform;
+}
+.peel-sticker[data-dragging] {
+  cursor: grabbing;
+}
+.sticker-slot {
+  position: absolute;
+  left: var(--ml);
+  top: var(--mt);
+  width: var(--mw);
+  aspect-ratio: 1;
+}
+@media (min-width: 1180px) {
+  .sticker-slot {
+    left: var(--l);
+    top: var(--t);
+    width: var(--w);
+  }
+}
+.polaroid {
+  position: relative;
+  aspect-ratio: 88 / 107;
+  container-type: inline-size;
+  background: #fbfaf6;
+  border-radius: 3px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    0 12px 28px -8px rgba(0, 0, 0, 0.22),
+    0 30px 60px -20px rgba(0, 0, 0, 0.18);
+}
+.polaroid-photo {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 6%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #000;
+}
+.polaroid-name {
+  position: absolute;
+  inset: auto 0 4.5% 0;
+  text-align: center;
+  font-family: var(--font-caveat), cursive;
+  font-weight: 700;
+  font-size: 13cqw;
+  line-height: 1;
+  color: #1b1b1b;
+  transform: rotate(-2deg);
 }

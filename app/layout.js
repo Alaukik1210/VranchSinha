@@ -1,40 +1,68 @@
-import { Funnel_Display, Geist_Mono, Outfit } from "next/font/google";
+import DotCursor from "@/components/site/DotCursor";
+import { Caveat, Geist_Mono, Instrument_Serif, Manrope, Unbounded } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import LiquidGlassFilter from "@/components/LiquidGlassFilter";
 
 
-const funnelDisplay = Funnel_Display({
-  variable: "--font-funnel-display",
+// v3: Unbounded for display, Manrope for text.
+const unbounded = Unbounded({
+  variable: "--font-unbounded",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+});
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
 });
 
 // Small metadata labels only (roles, indexes, captions).
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-  weight: ["400", "500"],
 });
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+// Handwriting on the About polaroid.
+const caveat = Caveat({
+  variable: "--font-caveat",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
+
+// Mockup titles.
+const instrument = Instrument_Serif({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
+});
+
+const DESCRIPTION = "Vranch Sinha is a product and brand designer. Always on brand, rarely on script. See selected work, leadership roles and references.";
+
+// Tells search engines who this site is about, and which profiles are the same person.
+const PERSON = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Vranch Sinha",
+  jobTitle: "Product and brand designer",
+  url: "https://vranchsinha.vercel.app",
+  address: { "@type": "PostalAddress", addressLocality: "Gurgaon", addressRegion: "Haryana", addressCountry: "IN" },
+  sameAs: ["https://www.linkedin.com/in/vranchsinha", "https://music.apple.com/profile/vranchsinha"],
+};
 
 export const metadata = {
-  title: "Vranch Sinha | Brand identity and interface designer",
-  description:
-    "Vranch Sinha — designer crafting digital experiences and brand identities.",
+  metadataBase: new URL("https://vranchsinha.vercel.app"),
+  title: "Vranch Sinha | Product and brand designer",
+  description: DESCRIPTION,
+  alternates: { canonical: "/" },
+  openGraph: { title: "Vranch Sinha", description: DESCRIPTION, url: "/", siteName: "Vranch Sinha", type: "website" },
+  twitter: { card: "summary_large_image", title: "Vranch Sinha", description: DESCRIPTION },
   icons: {
     icon: "/logo.svg",
   },
 };
 
 export const viewport = {
-  themeColor: "#0B0B0C",
+  themeColor: "#FFFEFC",
   width: "device-width",
   initialScale: 1,
 };
@@ -44,14 +72,20 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body
         className={`
-          ${funnelDisplay.variable}
-          ${outfit.variable}
+          ${unbounded.variable}
+          ${manrope.variable}
           ${geistMono.variable}
+          ${caveat.variable}
+          ${instrument.variable}
           antialiased
         `}
       >
+        {/* The page's height settles after load, so a restored scroll lands in the wrong place. */}
+        <script dangerouslySetInnerHTML={{ __html: "history.scrollRestoration='manual'" }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON) }} />
         <LiquidGlassFilter />
         <SmoothScroll>{children}</SmoothScroll>
+        <DotCursor />
       </body>
     </html>
   );

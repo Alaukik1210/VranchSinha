@@ -22,14 +22,6 @@ import Lightbox from "@/components/Lightbox";
  *     raremate-doctor.jpg      → curator's note (Dr. Sanjay Patel)
  *     raremate-standards.jpg   → four standards + sourcing register
  *     raremate-prescribers.jpg → cosmetologist carousel
- *   SportsNStats (flat .jpg captures — the .png siblings are the same
- *   screens as tilted 3D device renders, kept only for the cover):
- *     sns-cover.png         → multi-device "Players. Courts. Connected." hero
- *     sns-properties.jpg    → venue/properties dashboard
- *     sns-bookings.jpg      → court-booking interface
- *     sns-tournaments.jpg   → tournament standings
- *     sns-onboarding.jpg    → phone-number sign-in
- *     sns-error.jpg         → friendly error state
  * Any missing image gracefully falls back to an accent panel, so the
  * section always looks complete.
  */
@@ -84,35 +76,6 @@ export const projects = [
       { src: "/projects/raremate-doctor.jpg", title: "The Curator", tag: "Trust" },
       { src: "/projects/raremate-standards.jpg", title: "Four Standards", tag: "Proof" },
       { src: "/projects/raremate-prescribers.jpg", title: "Peer Proof", tag: "Social Proof" },
-    ],
-  },
-  {
-    name: "SportsNStats",
-    badge: "CONCEPT PROJECT",
-    tagline: "Making Sports Analytics More Accessible",
-    accent: "#5AD0C4",
-    accentSoft: "#8FE3DA",
-    cover: "/projects/sns-cover.png",
-    roles: ["UX Research", "Information Architecture", "Product Design"],
-    summary:
-      "A concept project focused on rethinking how fans interact with sports data. The challenge wasn't gathering statistics — it was presenting large amounts of information in a way that felt intuitive, engaging, and easy to navigate.",
-    body: [
-      "I approached the project from the ground up, starting with user research and information architecture before moving into wireframing and visual design. A significant part of the process involved simplifying complex data structures, establishing clear content hierarchy, and designing interfaces that help users quickly find meaningful insights without feeling overwhelmed.",
-      "It strengthened my understanding of designing data-heavy products — balancing usability with visual appeal and creating experiences where clarity becomes the most important feature. More than a sports platform, SportsNStats became an exercise in turning complexity into simplicity through thoughtful UX design.",
-    ],
-    metrics: null,
-    // Uses the shared multi-column grid (same as Genasis), but with the flat
-    // .jpg screen captures rather than the .png poster renders — the posters
-    // sit the devices at a 3D tilt, and these read better straight on.
-    // Their native ratios vary (~3:2 down to 1280x2007), so the crop is
-    // top-anchored to keep each screen's header and branding in frame.
-    screenObjectPosition: "top",
-    screens: [
-      { src: "/projects/sns-properties.jpg", title: "Find the Venue", tag: "Properties" },
-      { src: "/projects/sns-bookings.jpg", title: "Book the Hour", tag: "Bookings" },
-      { src: "/projects/sns-tournaments.jpg", title: "Run the Tournament", tag: "Tournaments" },
-      { src: "/projects/sns-onboarding.jpg", title: "Sign In Fast", tag: "Onboarding" },
-      { src: "/projects/sns-error.jpg", title: "Miss, Gracefully", tag: "Error States" },
     ],
   },
 ];

@@ -7,19 +7,19 @@ const SHIELD =
 const STAR =
   "M57.1215 49.4255C48.0265 49.4255 43.3411 56.8669 43.3411 63.2058C43.3411 56.8669 37.829 49.4255 29.5608 49.4255C37.829 49.4255 43.3411 44.7401 43.3411 35.6451C43.3411 44.7401 48.0265 49.4255 57.1215 49.4255Z";
 
-export default function Mark({ className = "", draw = false, stroke = "#DCC0F7" }) {
+export default function Mark({ className = "", draw = false, stroke = "#DCC0F7", star = "#F0F0F0", weight = 4 }) {
   return (
     <svg viewBox="0 0 86 89" fill="none" className={className} aria-hidden="true">
       <path
         d={SHIELD}
         stroke={stroke}
-        strokeWidth="4"
+        strokeWidth={weight}
         strokeLinecap="round"
         strokeLinejoin="round"
         pathLength="1"
         className={draw ? "mark-draw" : undefined}
       />
-      <path d={STAR} fill="#F0F0F0" className={draw ? "mark-star" : undefined} />
+      <path d={STAR} fill={star} className={draw ? "mark-star" : undefined} />
     </svg>
   );
 }

@@ -128,8 +128,6 @@ export default function Contact() {
           </div>
           <div className="md:col-span-3 flex flex-col gap-1.5">
             <span className="font-mono-ui text-[length:calc(var(--u)*11)] uppercase text-[var(--mute)] mb-1">Direct</span>
-            <a href={CONTACT.phoneHref} className="link-quiet">{CONTACT.phone}</a>
-            <a href={`mailto:${CONTACT.email}`} className="link-quiet">Email</a>
           </div>
           <div className="md:col-span-3 flex flex-col gap-1.5 md:items-end">
             <span className="font-mono-ui text-[length:calc(var(--u)*11)] uppercase text-[var(--mute)] mb-1">© 2026</span>
