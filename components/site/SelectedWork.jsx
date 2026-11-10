@@ -148,9 +148,8 @@ export default function SelectedWork() {
         reduceMotion,
         onIndex: setIndex,
         pills: CARDS.map((c) => c.pill),
-        onLayout: (layout) => {
-          const s = layout.step;
-          markCard(layout);
+        onLayout: ({ step: s }) => {
+          markCard(stretchLayout(host.clientWidth, host.clientHeight));
           if (s === step) return;
           step = s;
           section.style.setProperty("--work-travel", `${step * cards}px`);
@@ -241,7 +240,7 @@ export default function SelectedWork() {
         </div>
 
         <span className="work-slot" aria-hidden="true" />
-        <Hint id="work" target=".work-slot" side="top">
+        <Hint id="work" target=".work-slot" side="top" fallback="bottom" avoid=".work-chrome, .work-tag, .glass-pill">
           scroll, or drag the cards
         </Hint>
 

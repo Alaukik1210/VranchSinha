@@ -120,7 +120,7 @@ function spring(s, target, dt, k, c) {
 
 let topZ = 30;
 
-export default function PeelSticker({ kind, className = "", style, rotate = 0, boundsRef }) {
+export default function PeelSticker({ kind, className = "", style, rotate = 0 }) {
   const id = useId().replace(/:/g, "");
   const def = STICKERS[kind];
   const wrapRef = useRef(null);
@@ -185,7 +185,10 @@ export default function PeelSticker({ kind, className = "", style, rotate = 0, b
       spring(st.fold, st.foldT, dt, 380, 26);
       spring(st.lift, st.liftT, dt, 520, 24);
       spring(st.tilt, st.tiltT, dt, 300, 22);
-      if (st.drag) st.tiltT *= Math.pow(0.02, dt); // tilt relaxes when the hand slows
+      if (st.drag) {
+        st.tiltT *= Math.pow(0.02, dt); // tilt relaxes when the hand slows
+        edgeScroll(dt);
+      }
       draw();
       const moving =
         [st.fold, st.lift, st.tilt].some((s) => Math.abs(s.vel) > 0.002) ||
@@ -214,13 +217,47 @@ export default function PeelSticker({ kind, className = "", style, rotate = 0, b
       st.dir = { x: x * Math.cos(a) - y * Math.sin(a), y: x * Math.sin(a) + y * Math.cos(a) };
     };
 
+    // The sticker can go anywhere on the page. It moves with the hand, the page under it
+    // included, and stays inside the page.
+    const scrollTop = () => window.lenis?.animatedScroll ?? window.scrollY;
+    const follow = () => {
+      const d = st.drag;
+      let nx = d.ox + d.lx - d.sx;
+      let ny = d.oy + d.ly - d.sy + (scrollTop() - d.scroll);
+      const r = wrap.getBoundingClientRect();
+      const cx = r.left + r.width / 2 - st.x;
+      const cy = r.top + r.height / 2 - st.y;
+      const hw = r.width / 2;
+      const hh = r.height / 2;
+      const page = document.documentElement;
+      nx = Math.min(page.clientWidth - hw - cx, Math.max(hw - cx, nx));
+      ny = Math.min(page.scrollHeight - scrollTop() - hh - cy, Math.max(-scrollTop() + hh - cy, ny));
+      st.x = nx;
+      st.y = ny;
+    };
+    // Held near the top or bottom of the screen, the page scrolls to take it further.
+    const edgeScroll = (dt) => {
+      const d = st.drag;
+      const band = Math.min(90, window.innerHeight * 0.12);
+      const over = d.ly < band ? d.ly - band : d.ly > window.innerHeight - band ? d.ly - (window.innerHeight - band) : 0;
+      if (!over) return;
+      const by = (over / band) * 900 * dt;
+      if (window.lenis) window.lenis.scrollTo(window.lenis.animatedScroll + by, { immediate: true, force: true });
+      else window.scrollBy({ top: by, behavior: "instant" });
+      follow();
+    };
+    const onScroll = () => {
+      if (!st.drag) return;
+      follow();
+      kick();
+    };
     const onDown = (e) => {
       if (e.button !== 0) return;
       e.preventDefault();
       wrap.setPointerCapture(e.pointerId);
       aim(e);
       (wrap.parentElement || wrap).style.zIndex = String(++topZ);
-      st.drag = { id: e.pointerId, sx: e.clientX, sy: e.clientY, ox: st.x, oy: st.y, lx: e.clientX, lt: performance.now() };
+      st.drag = { id: e.pointerId, sx: e.clientX, sy: e.clientY, ox: st.x, oy: st.y, lx: e.clientX, ly: e.clientY, vx: e.clientX, lt: performance.now(), scroll: scrollTop() };
       st.foldT = 0.42;
       st.liftT = 1;
       wrap.dataset.dragging = "";
@@ -229,24 +266,12 @@ export default function PeelSticker({ kind, className = "", style, rotate = 0, b
     const onMove = (e) => {
       const d = st.drag;
       if (!d || e.pointerId !== d.id) return;
-      let nx = d.ox + e.clientX - d.sx;
-      let ny = d.oy + e.clientY - d.sy;
-      // Keep it within the section.
-      const b = boundsRef?.current?.getBoundingClientRect();
-      if (b) {
-        const r = wrap.getBoundingClientRect();
-        const cx = r.left + r.width / 2 - st.x;
-        const cy = r.top + r.height / 2 - st.y;
-        const hw = r.width / 2;
-        const hh = r.height / 2;
-        nx = Math.min(b.right - hw - cx, Math.max(b.left + hw - cx, nx));
-        ny = Math.min(b.bottom - hh - cy, Math.max(b.top + hh - cy, ny));
-      }
-      st.x = nx;
-      st.y = ny;
-      const now = performance.now();
-      const vx = (e.clientX - d.lx) / Math.max(8, now - d.lt);
       d.lx = e.clientX;
+      d.ly = e.clientY;
+      follow();
+      const now = performance.now();
+      const vx = (e.clientX - d.vx) / Math.max(8, now - d.lt);
+      d.vx = e.clientX;
       d.lt = now;
       st.tiltT = Math.max(-14, Math.min(14, st.tiltT * 0.6 + vx * 9));
       // Swinging the hand lifts the flap a little more.
@@ -264,7 +289,16 @@ export default function PeelSticker({ kind, className = "", style, rotate = 0, b
       delete wrap.dataset.dragging;
       kick();
     };
-
+    // A narrower window mustn't leave one off the side of the page.
+    const onResize = () => {
+      const r = wrap.getBoundingClientRect();
+      const over = r.right - document.documentElement.clientWidth;
+      if (over > 0) st.x -= over;
+      if (r.left < 0) st.x -= r.left;
+      draw();
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
     wrap.addEventListener("pointerdown", onDown);
     wrap.addEventListener("pointermove", onMove);
     wrap.addEventListener("pointerup", onUp);
@@ -278,8 +312,10 @@ export default function PeelSticker({ kind, className = "", style, rotate = 0, b
       wrap.removeEventListener("pointerup", onUp);
       wrap.removeEventListener("pointercancel", onUp);
       wrap.removeEventListener("lostpointercapture", onUp);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
     };
-  }, [rotate, boundsRef]);
+  }, [rotate]);
 
   return (
     <div ref={wrapRef} className={`peel-sticker ${className}`} style={style} aria-hidden="true">

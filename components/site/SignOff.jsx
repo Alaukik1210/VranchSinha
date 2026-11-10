@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { markHint } from "@/lib/useHint";
-import { onLensChange, openLens, warmLens } from "@/lib/visionLens";
+import { lensAt, moveLens, onLensChange, openLens, warmLens } from "@/lib/visionLens";
 import { CONTACT, EXPERIENCE, SIDE, WORK } from "@/lib/work";
 import Hint from "./Hint";
 import Mark from "./Mark";
@@ -82,6 +82,7 @@ export default function SignOff() {
 
     onLensChange((on) => {
       bill.classList.toggle("is-looking", on);
+      if (!on) bill.classList.remove("is-open", "is-lens");
       if (on) markHint("closer");
     });
 
@@ -107,17 +108,56 @@ export default function SignOff() {
       document.documentElement.removeAttribute("data-on-bill");
     };
 
-    // A tap anywhere else shuts the eye; a phone won't blur a link for us.
+    // Keyboard: a tap anywhere else shuts the eye. On a touch screen the eye is a thing
+    // to play with: drag it around the bill, and close it with the button. A tap that
+    // doesn't move still reaches the link under it.
+    let hold = null;
     const onDown = (e) => {
+      if (bill.classList.contains("is-lens")) {
+        if (e.target.closest(".bill-exit")) return;
+        const at = lensAt();
+        hold = { id: e.pointerId, x: e.clientX, y: e.clientY, lx: at.x, ly: at.y, moved: false };
+        return;
+      }
       if (bill.classList.contains("is-open") && !closerRef.current.contains(e.target)) {
         bill.classList.remove("is-open");
         openLens(false);
       }
     };
+    const onMove = (e) => {
+      if (!hold || e.pointerId !== hold.id) return;
+      const dx = e.clientX - hold.x;
+      const dy = e.clientY - hold.y;
+      if (!hold.moved && Math.hypot(dx, dy) < 6) return;
+      hold.moved = true;
+      bill.dataset.dragged = "";
+      const x = Math.min(window.innerWidth, Math.max(0, hold.lx + dx));
+      const y = Math.min(window.innerHeight, Math.max(0, hold.ly + dy));
+      moveLens(x, y);
+    };
+    const onUp = (e) => {
+      if (!hold || e.pointerId !== hold.id) return;
+      hold = null;
+      setTimeout(() => delete bill.dataset.dragged); // after the click it would have made
+    };
+    const onClickCapture = (e) => {
+      if (bill.dataset.dragged) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    bill.addEventListener("click", onClickCapture, true);
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
     document.addEventListener("pointerdown", onDown);
     const cleanUp = () => {
       cleanDark();
       document.removeEventListener("pointerdown", onDown);
+      bill.removeEventListener("click", onClickCapture, true);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
       openLens(false);
       onLensChange(null);
     };
@@ -300,10 +340,11 @@ export default function SignOff() {
     };
   }, []);
 
-  // Pointer: the cursor does the opening. Touch and keyboard get the same eye held
-  // on the line: one tap opens it, the next follows the link.
-  const open = (on) => {
+  // Pointer: the cursor does the opening. Keyboard gets the eye held on the line. On
+  // touch, a tap on the line opens it to play with, until "Close preview".
+  const open = (on, play = false) => {
     billRef.current.classList.toggle("is-open", on);
+    billRef.current.classList.toggle("is-lens", on && play);
     openLens(on, true);
   };
   const touch = () => !window.matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -390,10 +431,10 @@ export default function SignOff() {
                 onClick={(e) => {
                   if (!touch() || billRef.current.classList.contains("is-open")) return;
                   e.preventDefault();
-                  open(true);
+                  open(true, true);
                 }}
               >
-                Curious? Take a closer look.
+                Curious? Take a closer <span className="bill-look-word">look</span>.
               </a>
               <span className="bill-tag is-on-paper">
                 <Hint id="closer" className="hint-closer">
@@ -434,6 +475,9 @@ export default function SignOff() {
           hover the bill
         </Hint>
       </span>
+      <button type="button" className="bill-exit about-label" onClick={() => open(false)}>
+        Close preview
+      </button>
       <button ref={againRef} type="button" className="bill-again about-label">
         Print again?
       </button>

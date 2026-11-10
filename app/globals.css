@@ -562,6 +562,14 @@ html {
   color: var(--eye-ink);
   font-family: var(--font-manrope), system-ui, sans-serif;
 }
+/* Phones: one step down across the board, so every section shares the same scale. */
+@media (max-width: 640px) {
+  .site-v3 {
+    --fs-caption: 10px;
+    --fs-ui: 13px;
+    --fs-body: 15px;
+  }
+}
 .font-display {
   font-family: var(--font-unbounded), system-ui, sans-serif;
 }
@@ -575,6 +583,20 @@ html {
   font-size: var(--fs-body);
   line-height: 1.5;
   letter-spacing: -0.01em;
+}
+/* The film's canvas is as tall as the screen at its largest, so on a phone it runs on
+   under the browser's toolbar. Below the hero it sits under the next section. */
+.eye-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  height: 100lvh;
+}
+/* During the intro the film is the whole screen, over everything. */
+html.is-intro .eye-hero {
+  z-index: 85;
 }
 .eye-chrome {
   opacity: 0;
@@ -1016,6 +1038,7 @@ html[data-intro="done"] .glass-nav-wrap {
    italic title above. Everything on the device is in cqw, a share of its own width,
    and each inner radius is its outer radius less the bezel, so the corners run true. */
 .mock {
+  container-type: inline-size;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1035,7 +1058,7 @@ html[data-intro="done"] .glass-nav-wrap {
   text-align: center;
   font-family: var(--font-serif), Georgia, serif;
   font-style: italic;
-  font-size: clamp(22px, calc(var(--fs-body) * 1.5), 34px);
+  font-size: clamp(13px, 7.4cqw, 34px);
   line-height: 1.1;
   color: #fffefc;
 }
@@ -1175,6 +1198,18 @@ html[data-intro="done"] .glass-nav-wrap {
   align-items: baseline;
   gap: 24px;
 }
+/* Phones: every section heading the same way, the title with its labels under it. */
+@media (max-width: 480px) {
+  .shelf-head,
+  .work-chrome {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .work-chrome .about-label {
+    gap: 14px;
+  }
+}
 /* The wall: 100 units wide, every face a square turned into the plane by a matrix. */
 .iso {
   position: relative;
@@ -1182,6 +1217,12 @@ html[data-intro="done"] .glass-nav-wrap {
   aspect-ratio: 100 / 101;
   max-width: min(600px, 84svh);
   margin: calc(var(--u) * 28) auto 0;
+}
+/* Room above the wall for its note, where there's none beside it. */
+@media (max-width: 999px) {
+  .iso {
+    margin-top: calc(var(--u) * 28 + 64px);
+  }
 }
 .iso-tile {
   position: absolute;
@@ -1465,9 +1506,25 @@ html[data-intro="done"] .glass-nav-wrap {
 }
 .hint[data-side="top"] {
   flex-direction: column;
+  text-align: center;
+}
+.hint[data-side="bottom"] {
+  flex-direction: column-reverse;
+  text-align: center;
+}
+.hint[data-side="bottom"] svg {
+  rotate: -72deg;
+}
+.hint[data-side="left"] > span {
+  text-align: right;
 }
 .hint[data-side="top"] svg {
   rotate: 108deg;
+}
+/* Stickers can be carried anywhere on the page, so they ride above the sections after
+   this one (still under the nav). */
+.about-frame {
+  z-index: 40;
 }
 /* Room above the polaroid for its hint, where it stacks under the text. */
 @media (max-width: 767px) {
@@ -1505,6 +1562,15 @@ html[data-intro="done"] .glass-nav-wrap {
 }
 .bill.is-film {
   height: calc(100svh + var(--pull, 0px));
+}
+/* Phones: a closer view, the same bill in bigger type. */
+@media (max-width: 640px) {
+  .bill {
+    font-size: calc(var(--bill) / 24);
+  }
+  .bill-paper {
+    padding: 2.4em 1.3em 1.2em;
+  }
 }
 .bill-stage {
   position: sticky;
@@ -1769,6 +1835,35 @@ html[data-intro="done"] .glass-nav-wrap {
 .bill.is-film .bill-paper {
   pointer-events: none;
 }
+.bill-exit {
+  position: absolute;
+  top: calc(var(--u) * 30);
+  left: 20px;
+  z-index: 75;
+  padding: 8px 4px;
+  color: var(--ground);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.bill.is-lens .bill-exit {
+  opacity: 1;
+  pointer-events: auto;
+}
+.bill.is-lens .bill-again {
+  opacity: 0;
+  pointer-events: none;
+}
+/* While the eye is out to play, a finger moves it instead of the page. */
+.bill.is-lens .bill-stage {
+  touch-action: none;
+}
+/* "look" is the way in, so it's marked like a link. */
+.bill-look-word {
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
 .bill.is-film .bill-again {
   opacity: 0;
   pointer-events: none;
@@ -1777,6 +1872,10 @@ html[data-intro="done"] .glass-nav-wrap {
   display: none;
 }
 @media (max-width: 640px) {
+  .bill-exit {
+    top: calc(var(--u) * 84);
+    left: 26px;
+  }
   .bill-again {
     top: calc(var(--u) * 84);
     right: 26px;
@@ -1963,9 +2062,25 @@ html[data-intro="done"] .glass-nav-wrap {
   gap: 12px 24px;
   margin-top: calc(var(--u) * 96);
 }
-@media (min-width: 640px) {
-  .story-media.is-pair {
-    grid-template-columns: 1fr 1fr;
+/* Pairs stay side by side on every screen: each is still a tap to open full size. */
+.story-media.is-pair {
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 640px) {
+  .story-media {
+    gap: 10px;
+  }
+  .story-media + .story-media {
+    margin-top: calc(10px - var(--u) * 48);
+  }
+  .is-pair .story-panel {
+    border-radius: 16px;
+  }
+  /* Other projects: the name over the title, so every row lines up the same way. */
+  .story-others a {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 3px;
   }
 }
 /* The circle a card opens through. */
@@ -1992,6 +2107,66 @@ html[data-intro="done"] .glass-nav-wrap {
   grid-template-columns: auto 1fr;
   column-gap: 0.7em;
   align-items: start;
+}
+/* Music's note and its link take turns, each rising in as the other leaves. */
+.about-swap {
+  display: grid;
+}
+.about-swap > * {
+  grid-area: 1 / 1;
+  animation: about-swap 8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+.about-swap > :last-child {
+  animation-delay: -4s;
+}
+.about-swap-tag {
+  align-self: start;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: var(--fs-caption);
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--eye-ink);
+}
+@keyframes about-swap {
+  0%,
+  42% {
+    opacity: 1;
+    translate: 0 0;
+  }
+  50% {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+  51%,
+  92% {
+    opacity: 0;
+    translate: 0 6px;
+  }
+  100% {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .about-swap > * {
+    animation: none;
+  }
+  .about-swap-tag {
+    display: none;
+  }
+}
+/* Words that depend on the device: "click" with a pointer, "tap" on a touch screen. */
+.hint-touch {
+  display: none;
+}
+@media (hover: none) {
+  .hint-fine {
+    display: none;
+  }
+  .hint-touch {
+    display: inline;
+  }
 }
 .about-also-icon {
   display: block;

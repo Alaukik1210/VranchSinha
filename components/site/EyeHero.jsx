@@ -28,8 +28,11 @@ let played = false; // per page load
 
 const ease = (u) => (u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
 
-function framing(w, h) {
-  const cover = Math.max(w / STAGE.W, h / STAGE.H);
+// h is the hero's height; full is the canvas's, which on phones runs on under the
+// browser's toolbar so the intro fills the whole screen. The film is centred on the
+// hero, so it covers the larger of the two halves.
+function framing(w, h, full = h) {
+  const cover = Math.max(w / STAGE.W, (2 * Math.max(h / 2, full - h / 2)) / STAGE.H);
   // The ring fills the space between the top bar and the bottom line, so it
   // never collides with them (landscape phones are the tight case). The eye
   // stays inside it: most frames reach ~480 stage units from the centre, the
@@ -80,16 +83,18 @@ export default function EyeHero() {
 
     let w = 0;
     let h = 0;
+    let vh = 0; // the hero's height, where the film is centred
     let dpr = 1;
     let fr = framing(1, 1);
     const size = () => {
       const r = canvas.getBoundingClientRect();
       w = r.width;
       h = r.height;
+      vh = canvas.parentElement.clientHeight;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
-      fr = framing(w, h);
+      fr = framing(w, vh, h);
       setRing(fr.ring);
     };
     size();
@@ -97,7 +102,7 @@ export default function EyeHero() {
     const draw = (frame, scale) => {
       const s = scale * dpr;
       // Stage centre on canvas centre.
-      const base = [s, 0, 0, s, (w * dpr) / 2 - STAGE.CX * s, (h * dpr) / 2 - STAGE.CY * s];
+      const base = [s, 0, 0, s, (w * dpr) / 2 - STAGE.CX * s, (vh * dpr) / 2 - STAGE.CY * s];
       drawEyeFrame(ctx, frame, base, canvas.width, canvas.height);
     };
 
@@ -215,7 +220,7 @@ export default function EyeHero() {
 
   return (
     <section
-      className="eye-hero relative h-[100svh] min-h-[320px] overflow-hidden"
+      className="eye-hero relative h-[100svh] min-h-[320px] overflow-x-clip"
       aria-label="Introduction"
       onClick={intro ? () => skipRef.current?.() : undefined}
     >
@@ -247,7 +252,7 @@ export default function EyeHero() {
       ) : null}
 
       {/* The film draws over the ring (its ground is transparent). */}
-      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden="true" />
+      <canvas ref={canvasRef} className="eye-canvas" aria-hidden="true" />
 
       <h1 className="sr-only">Vranch Sinha, product and brand designer. Shift the perspective. Change the outcome.</h1>
 

@@ -188,9 +188,18 @@ export default function AboutSection() {
                       <Glyph className="about-also-icon" glyph={glyph} />
                       <span>
                         <span className="block">{what}</span>
-                        <span className="block text-[var(--eye-mute)]">
-                          {note}
-                        </span>
+                        {href ? (
+                          // The note takes turns with where the link goes.
+                          <span className="about-swap">
+                            <span className="text-[var(--eye-mute)]">{note}</span>
+                            <span className="about-swap-tag" aria-hidden="true">
+                              <span className="hint-fine">Click</span>
+                              <span className="hint-touch">Tap</span> to connect on Apple Music ↗
+                            </span>
+                          </span>
+                        ) : (
+                          <span className="block text-[var(--eye-mute)]">{note}</span>
+                        )}
                       </span>
                     </>
                   );
@@ -283,7 +292,6 @@ export default function AboutSection() {
                     <PeelSticker
                       kind={s.kind}
                       rotate={s.rotate}
-                      boundsRef={sectionRef}
                       className="h-full w-full"
                     />
                   </span>

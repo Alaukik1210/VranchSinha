@@ -12,8 +12,10 @@ const GAP = 14; // from the arrow's tip to what it points at, the same for every
  * so the arrow lands the same distance away at every screen size. Below `at` pixels of
  * width it uses `narrow` and `narrowTarget`, for screens with no room beside it. `edge`
  * is what the gap is measured to, when the target sits inside something larger.
+ * `fallback` is a side to try when the first would run into anything in `avoid`; if
+ * neither fits, the hint stays out of the way.
  */
-export default function Hint({ id, children, className = "", target, narrowTarget = target, edge, side = "top", narrow = side, at = 0 }) {
+export default function Hint({ id, children, className = "", target, narrowTarget = target, edge, side = "top", narrow = side, at = 0, fallback, avoid }) {
   const done = useHintDone(id);
   const ref = useRef(null);
 
@@ -27,26 +29,37 @@ export default function Hint({ id, children, className = "", target, narrowTarge
       const goal = document.querySelector(wide ? target : narrowTarget);
       const box = hint.offsetParent;
       if (!goal || !box) return;
-      hint.dataset.side = wide ? side : narrow;
-      hint.style.left = hint.style.top = "0px";
       const t = goal.getBoundingClientRect();
       const e = (edge && document.querySelector(edge)?.getBoundingClientRect()) || t;
       const o = box.getBoundingClientRect();
-      const h = hint.getBoundingClientRect();
-      const a = arrow.getBoundingClientRect();
-      const tip = { left: a.left - h.left, right: a.right - h.left, top: a.top - h.top, bottom: a.bottom - h.top };
-      const mid = { x: (a.left + a.right) / 2 - h.left, y: (a.top + a.bottom) / 2 - h.top };
-      const across = hint.dataset.side === "left" || hint.dataset.side === "right";
-      const spot = {
-        left: e.left - GAP - tip.right,
-        right: e.right + GAP - tip.left,
-        top: e.top - GAP - tip.bottom,
-      }[hint.dataset.side];
-      const x = across ? spot : (t.left + t.right) / 2 - h.width / 2;
-      const y = across ? (t.top + t.bottom) / 2 - mid.y : spot;
-      hint.style.left = `${x - o.left}px`;
-      hint.style.top = `${y - o.top}px`;
-      hint.dataset.placed = "";
+      const blocks = avoid ? [...document.querySelectorAll(avoid)].map((el) => el.getBoundingClientRect()) : [];
+      const sides = [wide ? side : narrow, fallback].filter(Boolean);
+
+      for (const which of sides) {
+        hint.dataset.side = which;
+        hint.style.left = hint.style.top = "0px";
+        const h = hint.getBoundingClientRect();
+        const a = arrow.getBoundingClientRect();
+        const tip = { left: a.left - h.left, right: a.right - h.left, top: a.top - h.top, bottom: a.bottom - h.top };
+        const mid = { x: (a.left + a.right) / 2 - h.left, y: (a.top + a.bottom) / 2 - h.top };
+        const across = which === "left" || which === "right";
+        const spot = {
+          left: e.left - GAP - tip.right,
+          right: e.right + GAP - tip.left,
+          top: e.top - GAP - tip.bottom,
+          bottom: e.bottom + GAP - tip.top,
+        }[which];
+        const x = across ? spot : (t.left + t.right) / 2 - h.width / 2;
+        const y = across ? (t.top + t.bottom) / 2 - mid.y : spot;
+        const r = { left: x, top: y, right: x + h.width, bottom: y + h.height };
+        const clash = blocks.some((b) => b.width && r.left < b.right && b.left < r.right && r.top < b.bottom + 6 && b.top - 6 < r.bottom);
+        if (clash && which !== sides.at(-1)) continue;
+        hint.style.left = `${x - o.left}px`;
+        hint.style.top = `${y - o.top}px`;
+        hint.style.visibility = clash ? "hidden" : "";
+        hint.dataset.placed = "";
+        return;
+      }
     };
 
     place();
@@ -67,7 +80,7 @@ export default function Hint({ id, children, className = "", target, narrowTarge
       seen.disconnect();
       clearTimeout(settle);
     };
-  }, [target, narrowTarget, edge, side, narrow, at]);
+  }, [target, narrowTarget, edge, side, narrow, at, fallback, avoid]);
 
   return (
     <span ref={ref} className={`hint ${className} ${done ? "is-done" : ""}`} aria-hidden="true">

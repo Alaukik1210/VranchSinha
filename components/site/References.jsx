@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { markHint } from "@/lib/useHint";
+import Hint from "./Hint";
 
 /**
  * References, as an isometric wall: three kinds of face (left, right, top) tiled
@@ -148,14 +150,20 @@ export default function References() {
   }, []);
 
   return (
-    <section id="references" aria-labelledby="references-title" className="shelf gutter">
+    <section id="references" aria-labelledby="references-title" className="shelf gutter relative">
       <div className="shelf-head">
         <h2 id="references-title" className="work-title">
           Eye candy
         </h2>
         <p className="about-label">(References)</p>
       </div>
-      <div ref={wall} className="iso" aria-hidden="true">
+      <Hint id="refs" target=".iso" side="left" narrow="top" at={1000}>
+        just for looking,
+        <br />
+        nothing to <span className="hint-fine">click</span>
+        <span className="hint-touch">tap</span>
+      </Hint>
+      <div ref={wall} className="iso" aria-hidden="true" onPointerDown={() => markHint("refs")}>
         {TILES.map((t, i) => (
           <span
             key={`${t.left}-${t.top}-${t.m}`}
