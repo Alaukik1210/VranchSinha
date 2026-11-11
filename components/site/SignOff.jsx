@@ -21,8 +21,8 @@ gsap.registerPlugin(ScrollTrigger);
  * the big eye, a lens onto the bill's other side: a project card with the line in red
  * and the details in white. It opens anywhere on the bill, and the details stay live under it.
  *
- * The stylesheet's resting state is the end of the film, so a link straight here,
- * reduced motion and no JavaScript all simply land on it. The scroll distance the film
+ * The stylesheet's resting state is the end of the film, so reduced motion and no
+ * JavaScript simply land on it. Contact lands at the printer, ready to pull. The scroll distance the film
  * needed is given back when it ends; "Print again?" feeds the bill back in and borrows
  * it again.
  */
@@ -301,14 +301,12 @@ export default function SignOff() {
         .to(paper, { y: hidden, duration: 1.2, ease: "power2.inOut" }, 1.45);
     };
 
-    if (window.location.hash !== "#contact") {
-      bill.classList.add("is-film");
-      gsap.set(tag, { autoAlpha: 0 });
-      build();
-      document.fonts?.ready.then(() => inFilm() && !tail && !back?.isActive() && build());
-    } else {
-      setTimeout(warmLens, 1500); // arrived straight on the finished bill
-    }
+    // Every visit pulls its own bill, Contact and links to #contact included: they land
+    // at the printer, and the scroll does the rest.
+    bill.classList.add("is-film");
+    gsap.set(tag, { autoAlpha: 0 });
+    build();
+    document.fonts?.ready.then(() => inFilm() && !tail && !back?.isActive() && build());
 
     // Anyone who came for the contact details can hurry the ending along.
     const hurry = () => tail?.isActive() && tail.timeScale(3);
@@ -437,8 +435,9 @@ export default function SignOff() {
                 Curious? Take a closer <span className="bill-look-word">look</span>.
               </a>
               <span className="bill-tag is-on-paper">
-                <Hint id="closer" className="hint-closer">
-                  tap
+                <Hint id="closer" className="hint-closer" target=".bill-look-word" side="bottom">
+                  <span className="hint-fine">hover</span>
+                  <span className="hint-touch">tap</span>
                 </Hint>
               </span>
             </div>
@@ -475,8 +474,10 @@ export default function SignOff() {
           hover the bill
         </Hint>
       </span>
-      <button type="button" className="bill-exit about-label" onClick={() => open(false)}>
-        Close preview
+      <button type="button" className="bill-exit" aria-label="Close preview" onClick={() => open(false)}>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
       </button>
       <button ref={againRef} type="button" className="bill-again about-label">
         Print again?

@@ -81,7 +81,14 @@ export default function RootLayout({ children }) {
         `}
       >
         {/* The page's height settles after load, so a restored scroll lands in the wrong place. */}
-        <script dangerouslySetInnerHTML={{ __html: "history.scrollRestoration='manual'" }} />
+        {/* A refresh always starts at the top with the intro, even after Contact left
+            #contact in the address. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "history.scrollRestoration='manual';var n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'&&location.hash)history.replaceState(null,'',location.pathname+location.search)",
+          }}
+        />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON) }} />
         <LiquidGlassFilter />
         <SmoothScroll>{children}</SmoothScroll>

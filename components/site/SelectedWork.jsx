@@ -172,6 +172,8 @@ export default function SelectedWork() {
       carouselRef.current = carousel;
       CARDS.forEach((c) => c.external || router.prefetch(c.link));
 
+      const touch = window.matchMedia("(hover: none)").matches;
+      let pagedUntil = 0;
       trigger = ScrollTrigger.create({
         trigger: section,
         start: "top top",
@@ -180,10 +182,80 @@ export default function SelectedWork() {
           carousel.scrollTo(self.progress * cards);
           if (self.progress > 0.12) markHint("work");
         },
-        snap: { snapTo: 1 / cards, delay: 0.13, duration: { min: 0.25, max: 0.6 }, ease: "power2.out", directional: false },
+        // On a touch screen swipes on the cards are paged by hand (below); the snap only
+        // straightens momentum that comes to rest inside the section, towards its heading.
+        snap: {
+          // While a swipe's own glide runs, the snap stands aside.
+          snapTo: (v, self) => {
+            if (performance.now() < pagedUntil) return v;
+            const at = v * cards;
+            // Already on a card (a return from a project, say): stay on it. Only a stop in
+            // between follows the direction it came from.
+            if (!touch || Math.abs(at - Math.round(at)) < 0.15) return Math.round(at) / cards;
+            return (self.direction > 0 ? Math.ceil(at) : Math.floor(at)) / cards;
+          },
+          delay: touch ? 0.35 : 0.13,
+          duration: { min: 0.25, max: 0.6 },
+          ease: "power2.out",
+        },
       });
 
       carousel.scrollTo(trigger.progress * cards); // arriving part-way down the section
+
+      // Touch: one swipe, one card. The page follows the finger, then settles on the
+      // next card in the direction of the swipe, or leaves the section past either end.
+      // A flick can't coast past projects, and no swipe is ever swallowed.
+      if (touch) {
+        let t = null;
+        // The page is moved directly here, so the triggers are told each time.
+        const to = (y) => {
+          window.scrollTo({ top: y, behavior: "instant" });
+          ScrollTrigger.update();
+        };
+        const ride = { y: 0 };
+        const glide = (y) => {
+          gsap.killTweensOf(ride);
+          ride.y = window.scrollY;
+          gsap.to(ride, { y, duration: 0.55, ease: "power2.out", onUpdate: () => to(ride.y) });
+        };
+        const onStart = (e) => {
+          gsap.killTweensOf(ride);
+          const p = e.touches[0];
+          t = e.touches.length === 1 ? { x: p.clientX, y: p.clientY, from: window.scrollY, axis: null, dy: 0 } : null;
+        };
+        const onMove = (e) => {
+          if (!t) return;
+          const p = e.touches[0];
+          const dx = p.clientX - t.x;
+          const dy = p.clientY - t.y;
+          if (!t.axis) {
+            if (Math.hypot(dx, dy) < 8) return;
+            t.axis = Math.abs(dy) > Math.abs(dx) ? "y" : "x";
+          }
+          if (t.axis !== "y") return;
+          e.preventDefault();
+          pagedUntil = performance.now() + 1200;
+          t.dy = dy;
+          to(t.from - dy);
+        };
+        const onEnd = () => {
+          if (!t || t.axis !== "y") {
+            t = null;
+            return;
+          }
+          const top = sectionTop();
+          const card = Math.round((t.from - top) / step);
+          const next = card + (Math.abs(t.dy) < 24 ? 0 : t.dy < 0 ? 1 : -1);
+          const leave = window.innerHeight * 0.6;
+          pagedUntil = performance.now() + 1200;
+          glide(next < 0 ? top - leave : next > cards ? top + cards * step + leave : top + next * step);
+          t = null;
+        };
+        host.addEventListener("touchstart", onStart, { passive: true });
+        host.addEventListener("touchmove", onMove, { passive: false });
+        host.addEventListener("touchend", onEnd);
+        host.addEventListener("touchcancel", onEnd);
+      }
 
       // Back from a case study: be on that project's card before the lens closes.
       const back = window.lensReturn;
