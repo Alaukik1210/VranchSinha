@@ -77,7 +77,7 @@ export default function SelectedWork() {
   const carouselRef = useRef(null);
   const [index, setIndex] = useState(0);
   const [failed, setFailed] = useState(false);
-  const [pastEnd, setPastEnd] = useState(false); // pushed on sideways past the last card
+  const [pastEnd, setPastEnd] = useState(false); // still pushing sideways on the last card
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -213,7 +213,10 @@ export default function SelectedWork() {
       carousel = createStretchCarousel(host, faces, {
         bg: GROUND,
         reduceMotion,
-        onIndex: setIndex,
+        onIndex: (i) => {
+          setIndex(i);
+          if (i !== CARDS.length - 1) setPastEnd(false); // back off the end: wait for another push
+        },
         pills: CARDS.map((c) => c.pill),
         onLayout: ({ step: s }) => {
           markCard(stretchLayout(host.clientWidth, host.clientHeight));
@@ -335,7 +338,7 @@ export default function SelectedWork() {
         </Hint>
 
         <Hint id="down" className={`hint-down ${pastEnd && index === CARDS.length - 1 ? "is-on" : ""}`}>
-          scroll down
+          scroll down to explore more
         </Hint>
 
         <p key={index} className="work-tag about-label">
