@@ -202,6 +202,7 @@ export default function SignOff() {
         else window.scrollTo({ top, behavior: "instant" });
       }
       ScrollTrigger.refresh();
+      window.dispatchEvent(new Event("hints:place"));
       warmLens();
     };
 

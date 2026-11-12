@@ -77,6 +77,7 @@ export default function SelectedWork() {
   const carouselRef = useRef(null);
   const [index, setIndex] = useState(0);
   const [failed, setFailed] = useState(false);
+  const [pastEnd, setPastEnd] = useState(false); // pushed on sideways past the last card
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -85,6 +86,7 @@ export default function SelectedWork() {
     let alive = true;
     let carousel = null;
     let trigger = null;
+    let moved = null;
     const first = stretchLayout(host.clientWidth, host.clientHeight);
     let step = first.step;
     // Where the centre card sits, for what's measured against it.
@@ -127,6 +129,70 @@ export default function SelectedWork() {
       } else window.scrollTo({ top: y, behavior: immediate ? "auto" : "smooth" });
     };
 
+    const touch = window.matchMedia("(hover: none)").matches;
+    let pagedUntil = 0;
+    let unhookTouch = null;
+    // Touch: one swipe, one card. The page follows the finger, then settles on the
+    // next card in the direction of the swipe, or leaves the section past either end.
+    // A flick can't coast past projects, and no swipe is ever swallowed.
+    if (touch) {
+      let t = null;
+      // The page is moved directly here, so the triggers are told each time.
+      const to = (y) => {
+        window.scrollTo({ top: y, behavior: "instant" });
+        ScrollTrigger.update();
+      };
+      const ride = { y: 0 };
+      const glide = (y) => {
+        gsap.killTweensOf(ride);
+        ride.y = window.scrollY;
+        gsap.to(ride, { y, duration: 0.55, ease: "power2.out", onUpdate: () => to(ride.y) });
+      };
+      const onStart = (e) => {
+        gsap.killTweensOf(ride);
+        const p = e.touches[0];
+        t = e.touches.length === 1 ? { x: p.clientX, y: p.clientY, from: window.scrollY, axis: null, dy: 0 } : null;
+      };
+      const onMove = (e) => {
+        if (!t) return;
+        const p = e.touches[0];
+        const dx = p.clientX - t.x;
+        const dy = p.clientY - t.y;
+        if (!t.axis) {
+          if (Math.hypot(dx, dy) < 8) return;
+          t.axis = Math.abs(dy) > Math.abs(dx) ? "y" : "x";
+        }
+        if (t.axis !== "y") return;
+        e.preventDefault();
+        pagedUntil = performance.now() + 1200;
+        t.dy = dy;
+        to(t.from - dy);
+      };
+      const onEnd = () => {
+        if (!t || t.axis !== "y") {
+          t = null;
+          return;
+        }
+        const top = sectionTop();
+        const card = Math.round((t.from - top) / step);
+        const next = card + (Math.abs(t.dy) < 24 ? 0 : t.dy < 0 ? 1 : -1);
+        const leave = window.innerHeight * 0.6;
+        pagedUntil = performance.now() + 1200;
+        glide(next < 0 ? top - leave : next > cards ? top + cards * step + leave : top + next * step);
+        t = null;
+      };
+      host.addEventListener("touchstart", onStart, { passive: true });
+      host.addEventListener("touchmove", onMove, { passive: false });
+      host.addEventListener("touchend", onEnd);
+      host.addEventListener("touchcancel", onEnd);
+      unhookTouch = () => {
+        host.removeEventListener("touchstart", onStart);
+        host.removeEventListener("touchmove", onMove);
+        host.removeEventListener("touchend", onEnd);
+        host.removeEventListener("touchcancel", onEnd);
+      };
+    }
+
     const onKey = (e) => {
       const { top, bottom } = section.getBoundingClientRect();
       if (!carousel || top > 2 || bottom < window.innerHeight || e.metaKey || e.ctrlKey || e.altKey) return; // pinned, its first and last card included
@@ -135,13 +201,14 @@ export default function SelectedWork() {
     };
 
     const boot = async () => {
-      const [{ createStretchCarousel, isLightDevice }, logos] = await Promise.all([
+      const [{ createStretchCarousel, isLightDevice, isTouchScreen }, logos] = await Promise.all([
         import("@/lib/stretchCarousel"),
         Promise.all(CARDS.map((c) => loadImage(LOGOS[c.slug].src))),
       ]);
       if (!alive) return;
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const scale = isLightDevice() ? 0.75 : window.devicePixelRatio >= 1.5 ? 1.25 : 1;
+      // A phone's card is a few hundred pixels across, so the full face is plenty.
+      const scale = isLightDevice() ? 0.75 : isTouchScreen() || window.devicePixelRatio < 1.5 ? 1 : 1.25;
       const faces = logos.map((logo, i) => paintCard(logo, CARDS[i], scale));
       carousel = createStretchCarousel(host, faces, {
         bg: GROUND,
@@ -156,6 +223,7 @@ export default function SelectedWork() {
           ScrollTrigger.refresh();
         },
         // Page scroll follows, so the next scroll carries on from this card.
+        onPastEnd: () => setPastEnd(true),
         onRelease: (card) => {
           markHint("work");
           scrollPage(sectionTop() + card * step, Boolean(trigger?.isActive));
@@ -172,8 +240,6 @@ export default function SelectedWork() {
       carouselRef.current = carousel;
       CARDS.forEach((c) => c.external || router.prefetch(c.link));
 
-      const touch = window.matchMedia("(hover: none)").matches;
-      let pagedUntil = 0;
       trigger = ScrollTrigger.create({
         trigger: section,
         start: "top top",
@@ -202,60 +268,10 @@ export default function SelectedWork() {
 
       carousel.scrollTo(trigger.progress * cards); // arriving part-way down the section
 
-      // Touch: one swipe, one card. The page follows the finger, then settles on the
-      // next card in the direction of the swipe, or leaves the section past either end.
-      // A flick can't coast past projects, and no swipe is ever swallowed.
-      if (touch) {
-        let t = null;
-        // The page is moved directly here, so the triggers are told each time.
-        const to = (y) => {
-          window.scrollTo({ top: y, behavior: "instant" });
-          ScrollTrigger.update();
-        };
-        const ride = { y: 0 };
-        const glide = (y) => {
-          gsap.killTweensOf(ride);
-          ride.y = window.scrollY;
-          gsap.to(ride, { y, duration: 0.55, ease: "power2.out", onUpdate: () => to(ride.y) });
-        };
-        const onStart = (e) => {
-          gsap.killTweensOf(ride);
-          const p = e.touches[0];
-          t = e.touches.length === 1 ? { x: p.clientX, y: p.clientY, from: window.scrollY, axis: null, dy: 0 } : null;
-        };
-        const onMove = (e) => {
-          if (!t) return;
-          const p = e.touches[0];
-          const dx = p.clientX - t.x;
-          const dy = p.clientY - t.y;
-          if (!t.axis) {
-            if (Math.hypot(dx, dy) < 8) return;
-            t.axis = Math.abs(dy) > Math.abs(dx) ? "y" : "x";
-          }
-          if (t.axis !== "y") return;
-          e.preventDefault();
-          pagedUntil = performance.now() + 1200;
-          t.dy = dy;
-          to(t.from - dy);
-        };
-        const onEnd = () => {
-          if (!t || t.axis !== "y") {
-            t = null;
-            return;
-          }
-          const top = sectionTop();
-          const card = Math.round((t.from - top) / step);
-          const next = card + (Math.abs(t.dy) < 24 ? 0 : t.dy < 0 ? 1 : -1);
-          const leave = window.innerHeight * 0.6;
-          pagedUntil = performance.now() + 1200;
-          glide(next < 0 ? top - leave : next > cards ? top + cards * step + leave : top + next * step);
-          t = null;
-        };
-        host.addEventListener("touchstart", onStart, { passive: true });
-        host.addEventListener("touchmove", onMove, { passive: false });
-        host.addEventListener("touchend", onEnd);
-        host.addEventListener("touchcancel", onEnd);
-      }
+      // Scrolled well on past the projects: the way down has been found.
+      moved = ScrollTrigger.create({ trigger: section, start: "bottom 60%", onEnter: () => markHint("down") });
+
+
 
       // Back from a case study: be on that project's card before the lens closes.
       const back = window.lensReturn;
@@ -283,7 +299,9 @@ export default function SelectedWork() {
       letGo();
       near.disconnect();
       trigger?.kill();
+      moved?.kill();
       window.removeEventListener("keydown", onKey);
+      unhookTouch?.();
       carousel?.dispose();
       carouselRef.current = null;
     };
@@ -314,6 +332,10 @@ export default function SelectedWork() {
         <span className="work-slot" aria-hidden="true" />
         <Hint id="work" target=".work-slot" side="top" fallback="bottom" avoid=".work-chrome, .work-tag, .glass-pill">
           scroll, or drag the cards
+        </Hint>
+
+        <Hint id="down" className={`hint-down ${pastEnd && index === CARDS.length - 1 ? "is-on" : ""}`}>
+          scroll down
         </Hint>
 
         <p key={index} className="work-tag about-label">

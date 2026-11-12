@@ -584,8 +584,9 @@ html {
   line-height: 1.5;
   letter-spacing: -0.01em;
 }
-/* The film's canvas is as tall as the screen at its largest, so on a phone it runs on
-   under the browser's toolbar. Below the hero it sits under the next section. */
+/* The film's canvas runs on past the bottom of the screen: on a phone the page carries
+   on under the browser's toolbar, further than 100lvh reaches on iOS 26. Below the
+   hero it sits under the next section. */
 .eye-canvas {
   position: absolute;
   top: 0;
@@ -594,16 +595,16 @@ html {
   height: 100%;
   height: 100lvh;
 }
-/* During the intro the film is the whole screen, over everything: fixed to the
-   window, so it reaches under a phone's browser bars too. */
+@media (hover: none) {
+  .eye-canvas {
+    height: calc(100lvh + 15lvh);
+  }
+}
+/* During the intro the film is over everything. It stays in the page rather than fixed:
+   Safari draws page content under its toolbar, never fixed layers, and the page can't
+   move until the intro ends. */
 html.is-intro .eye-hero {
   z-index: 85;
-}
-html.is-intro .eye-canvas {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100lvh;
 }
 .eye-chrome {
   opacity: 0;
@@ -869,6 +870,24 @@ html[data-intro="done"] .glass-nav-wrap {
 .work-title {
   font-size: var(--fs-body);
   font-weight: 500;
+}
+/* Pushed sideways past the last card: the page goes on below, not sideways. It sits
+   just under the card's name, the arrow pointing down the page. */
+.hint-down {
+  inset: auto 0 calc(var(--u) * 6);
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.35s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hint-down svg {
+  rotate: 100deg;
+}
+.hint-down.is-on:not(.is-done) {
+  opacity: 1;
+  transform: none;
 }
 /* The card's name, under it. Each one rises in as its card arrives. */
 .work-tag {
@@ -1729,6 +1748,12 @@ html[data-intro="done"] .glass-nav-wrap {
 }
 .hint-closer {
   font-size: max(1em, 17px);
+}
+/* Measured while the bill is zooming in it would land somewhere else, so it waits for
+   the film to end and fades in where it belongs. */
+.bill.is-film .hint-closer {
+  opacity: 0;
+  transition: none;
 }
 @media (hover: none), (max-width: 899px) {
   .bill-tag.is-beside {

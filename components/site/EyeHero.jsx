@@ -88,6 +88,9 @@ export default function EyeHero() {
     let fr = framing(1, 1);
     const size = () => {
       const r = canvas.getBoundingClientRect();
+      // A phone's toolbar sliding in or out fires a resize that changes nothing here, and
+      // setting a canvas's size clears and reallocates it, mid-scroll.
+      if (r.width === w && r.height === h && canvas.parentElement.clientHeight === vh) return;
       w = r.width;
       h = r.height;
       vh = canvas.parentElement.clientHeight;
@@ -155,6 +158,8 @@ export default function EyeHero() {
         draw(f, fr.hero);
       }
     };
+
+    if (mode !== "intro") unlock(); // held from the first byte, but no intro this time
 
     if (mode === "still") {
       raf = requestAnimationFrame(() => {

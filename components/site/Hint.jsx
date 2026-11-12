@@ -66,6 +66,8 @@ export default function Hint({ id, children, className = "", target, narrowTarge
     const watch = new ResizeObserver(place);
     watch.observe(document.documentElement);
     document.fonts?.ready.then(place);
+    // Whatever moved it (a film, say) can ask for a fresh measure once it's still.
+    window.addEventListener("hints:place", place);
     // What it points at may still be animating in when it first comes into view.
     let settle = 0;
     const seen = new IntersectionObserver(([e]) => {
@@ -78,6 +80,7 @@ export default function Hint({ id, children, className = "", target, narrowTarge
     return () => {
       watch.disconnect();
       seen.disconnect();
+      window.removeEventListener("hints:place", place);
       clearTimeout(settle);
     };
   }, [target, narrowTarget, edge, side, narrow, at, fallback, avoid]);

@@ -82,11 +82,12 @@ export default function RootLayout({ children }) {
       >
         {/* The page's height settles after load, so a restored scroll lands in the wrong place. */}
         {/* A refresh always starts at the top with the intro, even after Contact left
-            #contact in the address. */}
+            #contact in the address. The page is held still from the first byte; the
+            intro lets go when it ends, or straight away if it won't play. */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "history.scrollRestoration='manual';var n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'&&location.hash)history.replaceState(null,'',location.pathname+location.search)",
+              "history.scrollRestoration='manual';var n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'&&location.hash)history.replaceState(null,'',location.pathname+location.search);if(location.pathname==='/'&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('is-intro');setTimeout(function(){document.documentElement.classList.remove('is-intro')},20000)}",
           }}
         />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON) }} />
