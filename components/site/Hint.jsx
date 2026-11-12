@@ -89,8 +89,8 @@ export default function Hint({ id, children, className = "", target, narrowTarge
     <span ref={ref} className={`hint ${className} ${done ? "is-done" : ""}`} aria-hidden="true">
       <span>{children}</span>
       <svg viewBox="0 0 50 34">
-        <path d="M3 5c5 13 15 21 26 21 6 0 11-2 16-6" />
-        <path d="M36 17.5c3 .6 6.200 1.800 9.500 2.700-.8 3.200-1.300 6.300-2.800 9.300" />
+        <path d="M3 5c5 13 15 21 26 21 6 0 11-2 16-6" pathLength="1" />
+        <path d="M36 17.5c3 .6 6.200 1.800 9.500 2.700-.8 3.200-1.300 6.300-2.800 9.300" pathLength="1" />
       </svg>
     </span>
   );

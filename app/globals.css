@@ -1757,6 +1757,29 @@ html[data-intro="done"] .glass-nav-wrap {
   opacity: 0;
   transition: none;
 }
+/* Then it writes itself in after the push-in: the arrow draws on, then the word,
+   left to right, as if by hand. The drag note does the same when the eye opens. */
+.hint-closer svg path,
+.hint-drag svg path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.55s cubic-bezier(0.65, 0, 0.35, 1) 0.3s;
+}
+.hint-closer > span,
+.hint-drag > span {
+  clip-path: inset(-30% -4% -30% 0);
+  transition: clip-path 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.7s;
+}
+.bill.is-film .hint-closer svg path,
+.bill:not(.is-lens) .hint-drag svg path {
+  stroke-dashoffset: 1;
+  transition: none;
+}
+.bill.is-film .hint-closer > span,
+.bill:not(.is-lens) .hint-drag > span {
+  clip-path: inset(-30% 104% -30% 0);
+  transition: none;
+}
 @media (hover: none), (max-width: 899px) {
   .bill-tag.is-beside {
     display: none;
@@ -1884,6 +1907,34 @@ html[data-intro="done"] .glass-nav-wrap {
 }
 /* Closing the eye on a touch screen: a round X, centred at the foot of the screen
    where a thumb finds it. */
+/* Opened to play with on a touch screen: a word on what to do with it, gone at the
+   first drag. Placed just above the eye by SignOff. */
+.hint-drag {
+  left: 0;
+  right: 0;
+  z-index: 75;
+  width: max-content;
+  margin: 0 auto;
+  padding: 2px 10px 4px 6px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  font-size: 18px;
+  color: #0b0b0b;
+  background: #fffefc; /* reads clean over the bill's dashed rules */
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.45s;
+}
+.hint-drag svg {
+  width: 26px;
+  height: 18px;
+  rotate: 100deg; /* down onto the eye */
+  translate: 0 4px;
+}
+.bill.is-lens .hint-drag:not(.is-done) {
+  opacity: 1;
+}
 .bill-exit {
   position: absolute;
   left: 50%;

@@ -80,11 +80,23 @@ export default function SignOff() {
     const tag = [...bill.querySelectorAll(".bill-tag")];
     const [date, time, spent] = stampRef.current.querySelectorAll("[data-stamp]");
 
+    // The eye belongs to the bill at rest. Scroll away with it open and it closes,
+    // rather than hang over a page moving on underneath it.
+    let openedAt = 0;
     onLensChange((on) => {
       bill.classList.toggle("is-looking", on);
       if (!on) bill.classList.remove("is-open", "is-lens");
-      if (on) markHint("closer");
+      if (on) {
+        markHint("closer");
+        openedAt = window.scrollY;
+      }
     });
+    const onScrollAway = () => {
+      if (!bill.classList.contains("is-looking") || Math.abs(window.scrollY - openedAt) < 40) return;
+      bill.classList.remove("is-open", "is-lens");
+      openLens(false);
+    };
+    window.addEventListener("scroll", onScrollAway, { passive: true });
 
     // The bill is made out at the moment it prints.
     const stamp = () => {
@@ -131,6 +143,7 @@ export default function SignOff() {
       if (!hold.moved && Math.hypot(dx, dy) < 6) return;
       hold.moved = true;
       bill.dataset.dragged = "";
+      markHint("drag");
       const x = Math.min(window.innerWidth, Math.max(0, hold.lx + dx));
       const y = Math.min(window.innerHeight, Math.max(0, hold.ly + dy));
       moveLens(x, y);
@@ -154,6 +167,7 @@ export default function SignOff() {
     const cleanUp = () => {
       cleanDark();
       document.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("scroll", onScrollAway);
       bill.removeEventListener("click", onClickCapture, true);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
@@ -342,9 +356,18 @@ export default function SignOff() {
   // Pointer: the cursor does the opening. Keyboard gets the eye held on the line. On
   // touch, a tap on the line opens it to play with, until "Close preview".
   const open = (on, play = false) => {
-    billRef.current.classList.toggle("is-open", on);
-    billRef.current.classList.toggle("is-lens", on && play);
+    const bill = billRef.current;
+    bill.classList.toggle("is-open", on);
+    bill.classList.toggle("is-lens", on && play);
     openLens(on, true);
+    // The eye opens on the middle of the screen, as wide as the paper and 0.53 of that
+    // tall: the note sits just above it, pointing down.
+    const note = bill.querySelector(".hint-drag");
+    if (on && play && note?.offsetParent) {
+      const half = bill.querySelector(".bill-paper").getBoundingClientRect().width * 0.265;
+      const top = window.innerHeight / 2 - half - 8 - note.offsetHeight - note.offsetParent.getBoundingClientRect().top;
+      note.style.top = `${top}px`;
+    }
   };
   const touch = () => !window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
@@ -475,6 +498,9 @@ export default function SignOff() {
           hover the bill
         </Hint>
       </span>
+      <Hint id="drag" className="hint-drag">
+        drag the eye across the bill
+      </Hint>
       <button type="button" className="bill-exit" aria-label="Close preview" onClick={() => open(false)}>
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M6 6l12 12M18 6L6 18" />
