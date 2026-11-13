@@ -151,7 +151,12 @@ export default function SelectedWork() {
       const onStart = (e) => {
         gsap.killTweensOf(ride);
         const p = e.touches[0];
-        t = e.touches.length === 1 ? { x: p.clientX, y: p.clientY, from: window.scrollY, axis: null, dy: 0 } : null;
+        // Only while the section holds the screen. Above or below it (arriving, or just
+        // after leaving), the page scrolls as normal, so a swipe can never be sent back
+        // to where it started from.
+        const top = sectionTop();
+        const pinned = window.scrollY >= top - 2 && window.scrollY <= top + cards * step + 2;
+        t = pinned && e.touches.length === 1 ? { x: p.clientX, y: p.clientY, from: window.scrollY, axis: null, dy: 0 } : null;
       };
       const onMove = (e) => {
         if (!t) return;
@@ -247,6 +252,7 @@ export default function SelectedWork() {
         trigger: section,
         start: "top top",
         end: "bottom bottom",
+        onToggle: (self) => section.classList.toggle("is-free", !self.isActive),
         onUpdate: (self) => {
           carousel.scrollTo(self.progress * cards);
           if (self.progress > 0.12) markHint("work");
@@ -270,6 +276,7 @@ export default function SelectedWork() {
       });
 
       carousel.scrollTo(trigger.progress * cards); // arriving part-way down the section
+      section.classList.toggle("is-free", !trigger.isActive);
 
       // Scrolled well on past the projects: the way down has been found.
       moved = ScrollTrigger.create({ trigger: section, start: "bottom 60%", onEnter: () => markHint("down") });

@@ -28,7 +28,19 @@ export default function SmoothScroll({ children }) {
 
     // Expose for in-app programmatic scrolling (e.g. nav, buttons).
     window.lenis = lenis;
-    if (document.documentElement.classList.contains("is-intro")) lenis.stop();
+    // Held while the intro plays. However the hold lifts (the intro ending, or the
+    // first-byte script's safety timer), scrolling comes back with it.
+    const root = document.documentElement;
+    let held = null;
+    if (root.classList.contains("is-intro")) {
+      lenis.stop();
+      held = new MutationObserver(() => {
+        if (root.classList.contains("is-intro")) return;
+        held.disconnect();
+        lenis.start();
+      });
+      held.observe(root, { attributes: true, attributeFilter: ["class"] });
+    }
 
     let frame;
     const raf = (time) => {
@@ -39,6 +51,7 @@ export default function SmoothScroll({ children }) {
 
     return () => {
       cancelAnimationFrame(frame);
+      held?.disconnect();
       lenis.destroy();
       delete window.lenis;
     };

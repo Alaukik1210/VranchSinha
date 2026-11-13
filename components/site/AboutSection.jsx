@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import portrait from "@/public/about/portrait.jpg";
 import { motion, MotionConfig } from "motion/react";
 import { CONTACT } from "@/lib/work";
 import { markHint } from "@/lib/useHint";
@@ -249,10 +250,14 @@ export default function AboutSection() {
                   style={{ rotate: -3 }}
                 >
                   <div className="polaroid-photo">
+                    {/* Fetched with the page rather than on approach, with a blurred copy built
+                        in, so the frame is never an empty black square on a slow connection. */}
                     <Image
-                      src="/about/portrait.jpg"
+                      src={portrait}
                       alt="Vranch Sinha"
                       fill
+                      loading="eager"
+                      placeholder="blur"
                       sizes="(max-width: 768px) 80vw, 420px"
                       className="object-cover object-[62%_38%]"
                     />

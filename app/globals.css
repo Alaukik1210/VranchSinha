@@ -855,6 +855,11 @@ html[data-intro="done"] .glass-nav-wrap {
   .work-canvas {
     touch-action: none;
   }
+  /* Arriving or leaving, the section isn't holding the screen: up and down is the
+     page's own scroll, momentum and all, and only sideways reaches the cards. */
+  .work.is-free .work-canvas {
+    touch-action: pan-y;
+  }
 }
 .work-canvas[data-dragging] {
   cursor: grabbing;

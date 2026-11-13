@@ -3,10 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import Lightbox from "@/components/Lightbox";
-import { closeLens } from "@/lib/lens";
+import { closeLens, rememberCard } from "@/lib/lens";
 import { useRise } from "@/lib/useRise";
 import { CONTACT, SIDE } from "@/lib/work";
 import Mockup from "./Mockup";
@@ -47,6 +47,7 @@ export default function CaseStudyPage({ p, others }) {
   };
 
   useRise(root);
+  useEffect(() => rememberCard(p.slug), [p.slug]); // the browser's back button lands on this card
 
   return (
     <>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -34,6 +34,27 @@ export default function Lightbox({ items, index, onClose, accent = "#ffffff" }) 
     },
     [items.length]
   );
+
+  // The phone's back button (or swipe) closes the viewer rather than leaving the page:
+  // opening it adds a history entry, and closing it any other way takes that entry back.
+  const closeRef = useRef(onClose);
+  useEffect(() => {
+    closeRef.current = onClose;
+  });
+  useEffect(() => {
+    if (!open) return;
+    window.history.pushState({ viewer: true }, "");
+    let popped = false;
+    const onPop = () => {
+      popped = true;
+      closeRef.current();
+    };
+    window.addEventListener("popstate", onPop);
+    return () => {
+      window.removeEventListener("popstate", onPop);
+      if (!popped && window.history.state?.viewer) window.history.back();
+    };
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
