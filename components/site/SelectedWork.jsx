@@ -214,7 +214,13 @@ export default function SelectedWork() {
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       // A phone's card is a few hundred pixels across, so the full face is plenty.
       const scale = isLightDevice() ? 0.75 : isTouchScreen() || window.devicePixelRatio < 1.5 ? 1 : 1.25;
-      const faces = logos.map((logo, i) => paintCard(logo, CARDS[i], scale));
+      // One face a frame: painting all five at once (grain and all) is a long stall.
+      const faces = [];
+      for (let i = 0; i < logos.length; i++) {
+        faces.push(paintCard(logos[i], CARDS[i], scale));
+        await new Promise(requestAnimationFrame);
+        if (!alive) return;
+      }
       carousel = createStretchCarousel(host, faces, {
         bg: GROUND,
         reduceMotion,
@@ -292,12 +298,27 @@ export default function SelectedWork() {
       }
     };
 
+    // The intro gets the page to itself: the carousel's code and card faces are a heavy
+    // load, so they wait until it has played out (straight away when there's no intro).
+    let held = null;
+    const afterIntro = (go) => {
+      const root = document.documentElement;
+      if (!root.classList.contains("is-intro") || window.lensReturn !== undefined) return go();
+      held = new MutationObserver(() => {
+        if (root.classList.contains("is-intro")) return;
+        held.disconnect();
+        held = null;
+        setTimeout(() => alive && go(), 120); // after the release, not on top of it
+      });
+      held.observe(root, { attributes: true, attributeFilter: ["class"] });
+    };
+
     // Nothing loads until the section is close, so the hero has the page to itself.
     const near = new IntersectionObserver(
       ([e]) => {
         if (!e.isIntersecting) return;
         near.disconnect();
-        boot().catch(() => alive && setFailed(true));
+        afterIntro(() => boot().catch(() => alive && setFailed(true)));
       },
       { rootMargin: "120% 0px" },
     );
@@ -308,6 +329,7 @@ export default function SelectedWork() {
       alive = false;
       letGo();
       near.disconnect();
+      held?.disconnect();
       trigger?.kill();
       moved?.kill();
       window.removeEventListener("keydown", onKey);

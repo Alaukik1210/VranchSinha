@@ -669,6 +669,9 @@ html.is-intro .eye-hero {
 .eye-ring-spin {
   animation: eye-spin 48s linear infinite;
 }
+.eye-hero.is-away .eye-ring-spin {
+  animation-play-state: paused;
+}
 .eye-ring-text {
   fill: var(--eye-ink);
   font-family: var(--font-unbounded), system-ui, sans-serif;

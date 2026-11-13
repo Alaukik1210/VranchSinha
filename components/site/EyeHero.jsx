@@ -78,7 +78,8 @@ export default function EyeHero() {
     const ctx = canvas.getContext("2d");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     // A link straight to a section skips the film: it would play out of view.
-    const fresh = !played && !window.location.hash;
+    // Coming back to a project's card is not a first visit: no intro over the return.
+    const fresh = !played && !window.location.hash && window.lensReturn === undefined;
     played = true;
 
     let w = 0;
@@ -94,7 +95,9 @@ export default function EyeHero() {
       w = r.width;
       h = r.height;
       vh = canvas.parentElement.clientHeight;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // A phone's screen is small and dense: 1.5x looks the same here and leaves its
+      // graphics far fewer pixels to fill every frame of the film.
+      dpr = Math.min(window.devicePixelRatio || 1, window.matchMedia("(pointer: coarse)").matches ? 1.5 : 2);
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       fr = framing(w, vh, h);
@@ -186,6 +189,7 @@ export default function EyeHero() {
     const setVisible = (v) => {
       if (v === visible) return;
       visible = v;
+      canvas.parentElement.classList.toggle("is-away", !v); // the ring's spin rests with it
       const now = performance.now();
       if (!v) pausedAt = now;
       else {
