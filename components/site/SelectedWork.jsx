@@ -87,6 +87,7 @@ export default function SelectedWork() {
     let carousel = null;
     let trigger = null;
     let moved = null;
+    let far = null;
     const first = stretchLayout(host.clientWidth, host.clientHeight);
     let step = first.step;
     // Where the centre card sits, for what's measured against it.
@@ -252,6 +253,12 @@ export default function SelectedWork() {
         onLost: () => setFailed(true),
       });
       carouselRef.current = carousel;
+      // A phone has little graphics memory to spare, and the bill and its eye need theirs:
+      // well away from the section the carousel gives its context back until it's near.
+      if (touch) {
+        far = new IntersectionObserver(([e]) => carousel?.rest(!e.isIntersecting), { rootMargin: "150% 0px" });
+        far.observe(section);
+      }
       CARDS.forEach((c) => c.external || router.prefetch(c.link));
 
       trigger = ScrollTrigger.create({
@@ -330,6 +337,7 @@ export default function SelectedWork() {
       letGo();
       near.disconnect();
       held?.disconnect();
+      far?.disconnect();
       trigger?.kill();
       moved?.kill();
       window.removeEventListener("keydown", onKey);

@@ -217,7 +217,9 @@ export default function SignOff() {
       }
       ScrollTrigger.refresh();
       window.dispatchEvent(new Event("hints:place"));
-      warmLens();
+      // Hover opens the eye the moment the pointer arrives, so it's readied now. On touch
+      // it waits for the tap: building it as the bill lands is a spike a phone can't spare.
+      if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) warmLens();
     };
 
     // Taken over just before the paper runs out, so the last of it feeds out by itself
