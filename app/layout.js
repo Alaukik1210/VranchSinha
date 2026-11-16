@@ -54,8 +54,8 @@ export const metadata = {
   title: "Vranch Sinha | Product and brand designer",
   description: DESCRIPTION,
   alternates: { canonical: "/" },
-  openGraph: { title: "Vranch Sinha", description: DESCRIPTION, url: "/", siteName: "Vranch Sinha", type: "website" },
-  twitter: { card: "summary_large_image", title: "Vranch Sinha", description: DESCRIPTION },
+  openGraph: { title: "Vranch Sinha | Product and brand designer", description: DESCRIPTION, url: "/", siteName: "Vranch Sinha", type: "website" },
+  twitter: { card: "summary_large_image", title: "Vranch Sinha | Product and brand designer", description: DESCRIPTION },
   icons: {
     icon: "/logo.svg",
   },
