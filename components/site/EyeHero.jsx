@@ -79,7 +79,8 @@ export default function EyeHero() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     // A link straight to a section skips the film: it would play out of view.
     // Coming back to a project's card is not a first visit: no intro over the return.
-    const fresh = !played && !window.location.hash && window.lensReturn === undefined;
+    // Nor is a page the browser reloaded by itself (see Resume).
+    const fresh = !played && !window.location.hash && window.lensReturn === undefined && !window.__resume;
     played = true;
 
     let w = 0;

@@ -17,7 +17,7 @@ export default function Template({ children }) {
 
   useEffect(() => {
     mounted = true;
-    if (window.location.hash || window.lensReturn !== undefined) return;
+    if (window.location.hash || window.lensReturn !== undefined || window.__resume) return;
     if (window.lenis) window.lenis.scrollTo(0, { immediate: true, force: true });
     else window.scrollTo(0, 0);
   }, []);

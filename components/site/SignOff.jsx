@@ -185,6 +185,12 @@ export default function SignOff() {
     }
 
     const START = 0.66; // how far out the camera starts
+    // The tilt makes the whole bill one 3D layer, drawn in full at every step of the zoom.
+    // A phone's browser, an in-app one most of all, can run out of memory on it and reload
+    // the page, so there the camera only zooms and turns, flat.
+    const flat = !window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const tilt = (deg) => (flat ? 0 : deg);
+    const depth = flat ? {} : { transformPerspective: 1500 };
     const arrow = [...bill.querySelectorAll(".bill-tag path")].filter((p) => p.getBoundingClientRect().width);
     let pull = null;
     let tail = null;
@@ -245,7 +251,7 @@ export default function SignOff() {
         .to(printer, { y: 2, duration: 0.06, yoyo: true, repeat: 1, ease: "power1.inOut" }, 0.66)
         .to(paper, { y: end - 1.3 * em, duration: 0.38, ease: "back.out(1.7)" }, 0.66)
         // The push-in, down to the foot of the bill, already easing in underneath.
-        .to(camera, { scale: 1, rotationX: 0, rotationZ: 0, duration: 2.1, ease: "power3.inOut" }, 0.42)
+        .to(camera, { scale: 1, rotationX: tilt(0), rotationZ: 0, duration: 2.1, ease: "power3.inOut" }, 0.42)
         .to(paper, { y: 0, duration: 1.5, ease: "power3.inOut" }, 1.04)
         .to(printer, { yPercent: 130, duration: 1.1, ease: "power3.in" }, 0.95)
         // Then the little note.
@@ -269,7 +275,7 @@ export default function SignOff() {
       const rise = window.innerHeight * 0.6;
       end = -lift;
 
-      gsap.set(camera, { transformOrigin: "50% 100%", transformPerspective: 1500, scale: START, rotationX: 15, rotationZ: -1.6, willChange: "transform" });
+      gsap.set(camera, { transformOrigin: "50% 100%", ...depth, scale: START, rotationX: tilt(15), rotationZ: -1.6, willChange: "transform" });
       gsap.set(paper, { y: hidden, willChange: "transform" });
       gsap.set(printer, { visibility: "visible", yPercent: 100 });
 
@@ -292,7 +298,7 @@ export default function SignOff() {
         })
         .to(printer, { yPercent: 0, duration: rise, ease: "power3.out" }, 0)
         .to(paper, { y: -lift, duration: travel }, rise)
-        .to(camera, { scale: START * 1.05, rotationX: 10, rotationZ: -0.5, duration: travel }, rise);
+        .to(camera, { scale: START * 1.05, rotationX: tilt(10), rotationZ: -0.5, duration: travel }, rise);
       ScrollTrigger.refresh();
       if (pull.scrollTrigger) pull.progress(pull.scrollTrigger.progress); // already part-way in: no catching up
     };
@@ -306,13 +312,13 @@ export default function SignOff() {
       const { lift, hidden } = measure();
       bill.classList.add("is-film");
       stamp();
-      gsap.set(camera, { transformOrigin: "50% 100%", transformPerspective: 1500, willChange: "transform" });
+      gsap.set(camera, { transformOrigin: "50% 100%", ...depth, willChange: "transform" });
       gsap.set(paper, { willChange: "transform" });
       gsap.set(printer, { visibility: "visible", yPercent: 130 });
       back = gsap
         .timeline({ onComplete: build })
         .to(tag, { autoAlpha: 0, duration: 0.2 }, 0)
-        .to(camera, { scale: START, rotationX: 15, rotationZ: -1.6, duration: 1.5, ease: "power3.inOut" }, 0)
+        .to(camera, { scale: START, rotationX: tilt(15), rotationZ: -1.6, duration: 1.5, ease: "power3.inOut" }, 0)
         .to(paper, { y: -lift, duration: 1.5, ease: "power3.inOut" }, 0)
         .to(printer, { yPercent: 0, duration: 1, ease: "expo.out" }, 0.5)
         .to(paper, { y: hidden, duration: 1.2, ease: "power2.inOut" }, 1.45);
@@ -323,6 +329,11 @@ export default function SignOff() {
     bill.classList.add("is-film");
     gsap.set(tag, { autoAlpha: 0 });
     build();
+    // The browser reloaded the page by itself with the bill already out: it stays out.
+    if (window.__resume?.b) {
+      cut();
+      tail.progress(1);
+    }
     document.fonts?.ready.then(() => inFilm() && !tail && !back?.isActive() && build());
 
     // Anyone who came for the contact details can hurry the ending along.
